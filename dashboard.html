@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>News Intelligence Dashboard</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=DM+Sans:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #12121a;
+    --surface2: #1a1a26;
+    --border: #2a2a3a;
+    --accent: #00e5ff;
+    --accent2: #ff6b6b;
+    --accent3: #a8ff78;
+    --accent4: #ffbe0b;
+    --text: #e8e8f0;
+    --muted: #6b6b8a;
+    --font-mono: 'Space Mono', monospace;
+    --font-sans: 'DM Sans', sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-sans);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* Animated grid background */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .container {
+    max-width: 1300px;
+    margin: 0 auto;
+    padding: 0 24px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Header */
+  header {
+    padding: 40px 0 32px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 40px;
+  }
+
+  .header-inner {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  .logo-icon {
+    width: 48px;
+    height: 48px;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    animation: pulse 3s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,229,255,0.3); }
+    50% { box-shadow: 0 0 20px 8px rgba(0,229,255,0.1); }
+  }
+
+  h1 {
+    font-family: var(--font-mono);
+    font-size: 1.6rem;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    line-height: 1.2;
+  }
+
+  h1 span {
+    color: var(--accent);
+  }
+
+  .subtitle {
+    font-size: 0.8rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    margin-top: 4px;
+  }
+
+  .live-badge {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(168,255,120,0.1);
+    border: 1px solid rgba(168,255,120,0.3);
+    border-radius: 100px;
+    padding: 6px 14px;
+    font-size: 0.75rem;
+    font-family: var(--font-mono);
+    color: var(--accent3);
+  }
+
+  .live-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--accent3);
+    border-radius: 50%;
+    animation: blink 1.5s ease-in-out infinite;
+  }
+
+  @keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.2; }
+  }
+
+  /* Stat cards */
+  .stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.6s ease both;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .stat-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--accent);
+  }
+
+  .stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--card-accent, var(--accent));
+  }
+
+  .stat-card:nth-child(1) { --card-accent: var(--accent);  animation-delay: 0.1s; }
+  .stat-card:nth-child(2) { --card-accent: var(--accent2); animation-delay: 0.2s; }
+  .stat-card:nth-child(3) { --card-accent: var(--accent3); animation-delay: 0.3s; }
+  .stat-card:nth-child(4) { --card-accent: var(--accent4); animation-delay: 0.4s; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .stat-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 10px;
+  }
+
+  .stat-value {
+    font-family: var(--font-mono);
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: var(--card-accent, var(--accent));
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-sub {
+    font-size: 0.78rem;
+    color: var(--muted);
+  }
+
+  /* Charts grid */
+  .charts-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+  }
+
+  .chart-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px;
+    animation: fadeUp 0.6s ease both;
+    animation-delay: 0.3s;
+  }
+
+  .chart-card.full-width {
+    grid-column: 1 / -1;
+  }
+
+  .chart-title {
+    font-family: var(--font-mono);
+    font-size: 0.8rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .chart-title::before {
+    content: '';
+    width: 3px;
+    height: 14px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+
+  .chart-wrap {
+    position: relative;
+    height: 240px;
+  }
+
+  /* Keywords section */
+  .keywords-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .keyword-tag {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 0.82rem;
+    font-family: var(--font-mono);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .keyword-tag:hover {
+    border-color: var(--accent);
+    background: rgba(0,229,255,0.05);
+    transform: scale(1.03);
+  }
+
+  .keyword-freq {
+    font-size: 0.7rem;
+    color: var(--accent);
+    font-weight: 700;
+  }
+
+  /* Articles table */
+  .table-wrap {
+    overflow-x: auto;
+    margin-top: 8px;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+  }
+
+  th {
+    font-family: var(--font-mono);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--muted);
+    padding: 10px 16px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  td {
+    padding: 12px 16px;
+    border-bottom: 1px solid rgba(42,42,58,0.5);
+    vertical-align: top;
+    max-width: 300px;
+  }
+
+  tr:hover td { background: rgba(255,255,255,0.02); }
+
+  .source-badge {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-family: var(--font-mono);
+    font-weight: 700;
+  }
+
+  .lang-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-size: 0.68rem;
+    font-family: var(--font-mono);
+  }
+
+  .footer {
+    text-align: center;
+    padding: 40px 0 32px;
+    color: var(--muted);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  @media (max-width: 768px) {
+    .charts-grid { grid-template-columns: 1fr; }
+    .chart-card.full-width { grid-column: 1; }
+    h1 { font-size: 1.2rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="container">
+  <header>
+    <div class="header-inner">
+      <div class="logo">
+        <div class="logo-icon">📡</div>
+        <div>
+          <h1>News<span>Intelligence</span></h1>
+          <div class="subtitle">// Big Data Media Analytics Platform</div>
+        </div>
+      </div>
+      <div class="live-badge">
+        <div class="live-dot"></div>
+        LIVE DASHBOARD
+      </div>
+    </div>
+  </header>
+
+  <!-- STAT CARDS -->
+  <div class="stats-grid" id="statsGrid"></div>
+
+  <!-- CHARTS -->
+  <div class="charts-grid">
+    <div class="chart-card">
+      <div class="chart-title">Articles by Source</div>
+      <div class="chart-wrap"><canvas id="sourceChart"></canvas></div>
+    </div>
+    <div class="chart-card">
+      <div class="chart-title">Articles by Language</div>
+      <div class="chart-wrap"><canvas id="langChart"></canvas></div>
+    </div>
+    <div class="chart-card full-width">
+      <div class="chart-title">Articles by Date</div>
+      <div class="chart-wrap"><canvas id="dateChart"></canvas></div>
+    </div>
+    <div class="chart-card full-width">
+      <div class="chart-title">Top Keywords</div>
+      <div class="chart-wrap" style="height:200px"><canvas id="keywordChart"></canvas></div>
+    </div>
+  </div>
+
+  <!-- KEYWORDS TAGS -->
+  <div class="chart-card" style="margin-bottom:20px">
+    <div class="chart-title">Trending Keywords</div>
+    <div class="keywords-grid" id="keywordTags"></div>
+  </div>
+
+  <!-- ARTICLES TABLE -->
+  <div class="chart-card">
+    <div class="chart-title">Recent Articles</div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Title</th>
+            <th>Source</th>
+            <th>Category</th>
+            <th>Language</th>
+            <th>Date</th>
+          </tr>
+        </thead>
+        <tbody id="articlesTable"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="footer">
+    EMSI Casablanca — IADATA 2025/2026 — Big Data News Platform
+  </div>
+</div>
+
+<script>
+// ─── LOAD DATA FROM GOLD LAYER JSON FILES ───────────────────────────────────
+// 
+// HOW TO USE:
+// Since browsers can't read local files directly, you have two options:
+//
+// OPTION 1 (Easy): Run a simple Python server:
+//   python -m http.server 8000
+//   Then open http://localhost:8000/dashboard.html
+//
+// OPTION 2: Paste your JSON data directly into the variables below.
+//
+
+// ── PASTE YOUR GOLD DATA HERE ──────────────────────────────────────────────
+// Copy the content of each gold JSON file and paste it below.
+
+const DATA = {
+  summary: {
+    "total_articles": 70,
+    "total_sources": 2,
+    "sources": ["BBC News", "Al Jazeera"],
+    "languages": ["en", "ar"],
+    "avg_content_length": 3402.2,
+    "generated_at": new Date().toISOString()
+  },
+
+  bySource: [
+    {"source": "BBC News",    "article_count": 50},
+    {"source": "Al Jazeera",  "article_count": 20}
+  ],
+
+  byLanguage: [
+    {"language": "English", "language_code": "en", "article_count": 70}
+  ],
+
+  byDate: [
+    {"date": new Date().toISOString().slice(0,10), "article_count": 70}
+  ],
+
+  keywords: [
+    {"keyword": "government", "frequency": 120},
+    {"keyword": "world",      "frequency": 100},
+    {"keyword": "country",    "frequency": 95},
+    {"keyword": "told",       "frequency": 90},
+    {"keyword": "other",      "frequency": 85},
+    {"keyword": "time",       "frequency": 80},
+    {"keyword": "people",     "frequency": 75},
+    {"keyword": "years",      "frequency": 70},
+    {"keyword": "president",  "frequency": 65},
+    {"keyword": "national",   "frequency": 60},
+    {"keyword": "state",      "frequency": 55},
+    {"keyword": "minister",   "frequency": 50},
+    {"keyword": "attack",     "frequency": 45},
+    {"keyword": "military",   "frequency": 40},
+    {"keyword": "economy",    "frequency": 38},
+  ],
+
+  // Paste a few sample articles from your silver JSON here
+  articles: []
+};
+
+// ── REPLACE DATA ABOVE WITH YOUR ACTUAL GOLD FILES ──────────────────────────
+// To load real data, open each file in data_lake/gold/ and paste its content.
+// Example: open articles_by_source.json, copy the array, paste as bySource above.
+
+// ─── RENDER STATS ────────────────────────────────────────────────────────────
+function renderStats() {
+  const s = DATA.summary;
+  const cards = [
+    { label: "Total Articles",   value: s.total_articles,                          sub: "collected & cleaned",        accent: "var(--accent)"  },
+    { label: "News Sources",     value: s.total_sources,                            sub: s.sources.join(", "),         accent: "var(--accent2)" },
+    { label: "Avg Content",      value: Math.round(s.avg_content_length) + " ch",  sub: "characters per article",     accent: "var(--accent3)" },
+    { label: "Languages",        value: s.languages.length,                         sub: s.languages.map(l => l.toUpperCase()).join(", "), accent: "var(--accent4)" },
+  ];
+
+  document.getElementById("statsGrid").innerHTML = cards.map(c => `
+    <div class="stat-card" style="--card-accent:${c.accent}">
+      <div class="stat-label">${c.label}</div>
+      <div class="stat-value" style="color:${c.accent}">${c.value}</div>
+      <div class="stat-sub">${c.sub}</div>
+    </div>
+  `).join("");
+}
+
+// ─── CHART DEFAULTS ───────────────────────────────────────────────────────────
+Chart.defaults.color = "#6b6b8a";
+Chart.defaults.borderColor = "#2a2a3a";
+Chart.defaults.font.family = "'Space Mono', monospace";
+Chart.defaults.font.size = 11;
+
+const COLORS = ["#00e5ff","#ff6b6b","#a8ff78","#ffbe0b","#c77dff","#ff9f1c"];
+
+// ─── SOURCE CHART ─────────────────────────────────────────────────────────────
+function renderSourceChart() {
+  new Chart(document.getElementById("sourceChart"), {
+    type: "doughnut",
+    data: {
+      labels: DATA.bySource.map(d => d.source),
+      datasets: [{
+        data: DATA.bySource.map(d => d.article_count),
+        backgroundColor: COLORS,
+        borderColor: "#0a0a0f",
+        borderWidth: 3,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "bottom", labels: { padding: 16, usePointStyle: true } }
+      }
+    }
+  });
+}
+
+// ─── LANGUAGE CHART ───────────────────────────────────────────────────────────
+function renderLangChart() {
+  new Chart(document.getElementById("langChart"), {
+    type: "pie",
+    data: {
+      labels: DATA.byLanguage.map(d => d.language),
+      datasets: [{
+        data: DATA.byLanguage.map(d => d.article_count),
+        backgroundColor: ["#00e5ff","#ff6b6b","#a8ff78"],
+        borderColor: "#0a0a0f",
+        borderWidth: 3,
+        hoverOffset: 8,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: "bottom", labels: { padding: 16, usePointStyle: true } }
+      }
+    }
+  });
+}
+
+// ─── DATE CHART ───────────────────────────────────────────────────────────────
+function renderDateChart() {
+  const sorted = [...DATA.byDate].sort((a,b) => a.date.localeCompare(b.date));
+  new Chart(document.getElementById("dateChart"), {
+    type: "bar",
+    data: {
+      labels: sorted.map(d => d.date),
+      datasets: [{
+        label: "Articles",
+        data: sorted.map(d => d.article_count),
+        backgroundColor: "rgba(0,229,255,0.2)",
+        borderColor: "#00e5ff",
+        borderWidth: 2,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false } },
+        y: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.04)" } }
+      }
+    }
+  });
+}
+
+// ─── KEYWORD CHART ────────────────────────────────────────────────────────────
+function renderKeywordChart() {
+  const top = DATA.keywords.slice(0, 12);
+  new Chart(document.getElementById("keywordChart"), {
+    type: "bar",
+    data: {
+      labels: top.map(d => d.keyword),
+      datasets: [{
+        label: "Frequency",
+        data: top.map(d => d.frequency),
+        backgroundColor: top.map((_, i) => COLORS[i % COLORS.length] + "55"),
+        borderColor: top.map((_, i) => COLORS[i % COLORS.length]),
+        borderWidth: 2,
+        borderRadius: 6,
+      }]
+    },
+    options: {
+      indexAxis: "y",
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { beginAtZero: true, grid: { color: "rgba(255,255,255,0.04)" } },
+        y: { grid: { display: false } }
+      }
+    }
+  });
+}
+
+// ─── KEYWORD TAGS ─────────────────────────────────────────────────────────────
+function renderKeywordTags() {
+  document.getElementById("keywordTags").innerHTML = DATA.keywords.map((k, i) => `
+    <div class="keyword-tag" style="border-color:${COLORS[i % COLORS.length]}33">
+      ${k.keyword}
+      <span class="keyword-freq" style="color:${COLORS[i % COLORS.length]}">${k.frequency}</span>
+    </div>
+  `).join("");
+}
+
+// ─── SOURCE COLORS ────────────────────────────────────────────────────────────
+const sourceColors = {
+  "BBC News":   { bg: "rgba(0,229,255,0.1)",  color: "#00e5ff" },
+  "Al Jazeera": { bg: "rgba(255,107,107,0.1)", color: "#ff6b6b" },
+  "Reuters":    { bg: "rgba(255,190,11,0.1)",  color: "#ffbe0b" },
+  "Hespress":   { bg: "rgba(168,255,120,0.1)", color: "#a8ff78" },
+};
+
+const langColors = {
+  "en": { bg: "rgba(0,229,255,0.1)",  color: "#00e5ff" },
+  "ar": { bg: "rgba(255,107,107,0.1)", color: "#ff6b6b" },
+  "fr": { bg: "rgba(168,255,120,0.1)", color: "#a8ff78" },
+};
+
+// ─── ARTICLES TABLE ───────────────────────────────────────────────────────────
+function renderTable() {
+  const tbody = document.getElementById("articlesTable");
+
+  // Use sample articles if available, otherwise show placeholder
+  const articles = DATA.articles.length > 0 ? DATA.articles.slice(0, 20) : generateSampleRows();
+
+  tbody.innerHTML = articles.map(a => {
+    const sc = sourceColors[a.source] || { bg: "rgba(255,255,255,0.1)", color: "#fff" };
+    const lc = langColors[a.language] || { bg: "rgba(255,255,255,0.1)", color: "#fff" };
+    const date = a.publication_date ? a.publication_date.slice(0, 10) : "—";
+    const title = (a.title || "").slice(0, 80) + ((a.title || "").length > 80 ? "…" : "");
+    const cat = a.category || "—";
+    return `
+      <tr>
+        <td style="color:var(--text)">${title}</td>
+        <td><span class="source-badge" style="background:${sc.bg};color:${sc.color}">${a.source}</span></td>
+        <td style="color:var(--muted);font-size:0.78rem">${cat}</td>
+        <td><span class="lang-badge" style="background:${lc.bg};color:${lc.color}">${(a.language||"").toUpperCase()}</span></td>
+        <td style="color:var(--muted);font-family:var(--font-mono);font-size:0.75rem">${date}</td>
+      </tr>
+    `;
+  }).join("");
+}
+
+function generateSampleRows() {
+  return [
+    { title: "Load your silver JSON data to see real articles here", source: "BBC News", category: "top_news", language: "en", publication_date: new Date().toISOString() },
+    { title: "Open dashboard.html with a local server: python -m http.server 8000", source: "Al Jazeera", category: "world", language: "en", publication_date: new Date().toISOString() },
+  ];
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+renderStats();
+renderSourceChart();
+renderLangChart();
+renderDateChart();
+renderKeywordChart();
+renderKeywordTags();
+renderTable();
+</script>
+</body>
+</html>

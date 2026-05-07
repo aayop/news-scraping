@@ -1,0 +1,164 @@
+"""
+Hespress News Scraper
+Collects articles from hespress.com (Moroccan news site)
+"""
+
+import requests
+from bs4 import BeautifulSoup
+from datetime import datetime
+import json
+import time
+import logging
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
+
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+    "Accept-Language": "ar,fr;q=0.9,en;q=0.8",
+    "Referer": "https://www.hespress.com/",
+}
+
+BASE_URL = "https://www.hespress.com"
+
+CATEGORIES = [
+    f"{BASE_URL}/",
+    f"{BASE_URL}/politique",
+    f"{BASE_URL}/societe",
+    f"{BASE_URL}/economie",
+    f"{BASE_URL}/sport",
+]
+
+
+def get_article_links(category_url, max_articles=20):
+    links = []
+    try:
+        response = requests.get(category_url, headers=HEADERS, timeout=15)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        for article in soup.find_all("article"):
+            a_tag = article.find("a", href=True)
+            if a_tag:
+                href = a_tag["href"]
+                if href.startswith("/"):
+                    href = BASE_URL + href
+                if href not in links:
+                    links.append(href)
+            if len(links) >= max_articles:
+                break
+
+    except requests.RequestException as e:
+        logger.error(f"Failed to fetch category page {category_url}: {e}")
+
+    return links
+
+
+def scrape_article(url):
+    try:
+        response = requests.get(url, headers=HEADERS, timeout=15)
+        response.raise_for_status()
+        soup = BeautifulSoup(response.text, "html.parser")
+
+        # Title
+        title = None
+        title_tag = soup.find("h1")
+        if title_tag:
+            title = title_tag.get_text(strip=True)
+
+        # Author
+        author = None
+        author_tag = soup.find(class_=lambda c: c and "author" in c.lower())
+        if author_tag:
+            author = author_tag.get_text(strip=True)
+
+        # Date
+        pub_date = None
+        date_tag = soup.find("time")
+        if date_tag:
+            pub_date = date_tag.get("datetime") or date_tag.get_text(strip=True)
+
+        # Category
+        category = None
+        breadcrumb = soup.find(class_=lambda c: c and "breadcrumb" in c.lower())
+        if breadcrumb:
+            crumbs = breadcrumb.find_all("a")
+            if len(crumbs) > 1:
+                category = crumbs[-1].get_text(strip=True)
+
+        # Content
+        content = ""
+        content_div = soup.find(class_=lambda c: c and "article-content" in c.lower())
+        if not content_div:
+            content_div = soup.find("div", class_="post-content")
+        if not content_div:
+            content_div = soup.find("article")
+        if content_div:
+            for tag in content_div.find_all(["script", "style", "nav", "aside"]):
+                tag.decompose()
+            content = content_div.get_text(separator=" ", strip=True)
+
+        if not title or not content:
+            logger.warning(f"Skipping article (missing title or content): {url}")
+            return None
+
+        return {
+            "title": title,
+            "author": author,
+            "publication_date": pub_date,
+            "category": category,
+            "content": content[:5000],
+            "source": "Hespress",
+            "url": url,
+            "language": "ar",
+            "scraped_at": datetime.utcnow().isoformat(),
+        }
+
+    except requests.RequestException as e:
+        logger.error(f"Failed to scrape article {url}: {e}")
+        return None
+
+
+def run_scraper(max_articles=50):
+    all_articles = []
+    seen_urls = set()
+
+    for category_url in CATEGORIES:
+        if len(all_articles) >= max_articles:
+            break
+
+        logger.info(f"Fetching links from: {category_url}")
+        links = get_article_links(category_url, max_articles=10)
+        logger.info(f"Found {len(links)} links")
+
+        for url in links:
+            if url in seen_urls:
+                continue
+            seen_urls.add(url)
+
+            logger.info(f"Scraping: {url}")
+            article = scrape_article(url)
+            if article:
+                all_articles.append(article)
+                logger.info(f"✓ Scraped: {article['title'][:60]}")
+
+            time.sleep(1)
+
+            if len(all_articles) >= max_articles:
+                break
+
+    logger.info(f"Total articles scraped: {len(all_articles)}")
+    return all_articles
+
+
+if __name__ == "__main__":
+    articles = run_scraper(max_articles=50)
+    output_file = "hespress_raw.json"
+    with open(output_file, "w", encoding="utf-8") as f:
+        json.dump(articles, f, ensure_ascii=False, indent=2)
+    print(f"\n✅ Done! Scraped {len(articles)} articles → saved to {output_file}")

@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  news-intelligence:
+    build: .
+    container_name: news-intelligence-platform
+    volumes:
+      # Mount data directories to persist data between runs
+      - ./data_lake:/app/data_lake
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      # Add any scraping configuration here
+      - SCRAPER_TIMEOUT=30
+      - MAX_ARTICLES_PER_SOURCE=50
+    restart: unless-stopped
+    command: ["python", "pipeline.py", "--skip-scraping"]  # Default to skip scraping in container
+
+  # Optional: Add a web server for the dashboard
+  dashboard-server:
+    image: nginx:alpine
+    container_name: news-dashboard-server
+    ports:
+      - "8080:80"
+    volumes:
+      - ./dashboard.html:/usr/share/nginx/html/index.html
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - news-intelligence
+    restart: unless-stopped
+    profiles:
+      - dashboard
+
+  # Optional: Add a scheduled runner for periodic execution
+  scheduler:
+    build: .
+    container_name: news-scheduler
+    volumes:
+      - ./data_lake:/app/data_lake
+      - ./reports:/app/reports
+      - ./logs:/app/logs
+    environment:
+      - PYTHONPATH=/app
+      - PYTHONUNBUFFERED=1
+      - SCRAPER_TIMEOUT=30
+      - MAX_ARTICLES_PER_SOURCE=50
+    command: ["sh", "-c", "while true; do echo 'Running scheduled pipeline...'; python pipeline.py; echo 'Sleeping for 6 hours...'; sleep 21600; done"]
+    restart: unless-stopped
+    profiles:
+      - scheduler
+
+networks:
+  default:
+    name: news-intelligence-network
