@@ -65,6 +65,16 @@ The platform follows a modern data lake architecture with three layers:
    docker-compose --profile scheduler up
    ```
 
+### Deployment helper script
+
+A shell helper script is included for teammates to validate and start the Docker deployment from the project root.
+
+```bash
+bash docker_setup.sh
+```
+
+The script verifies required files, checks Docker and Compose, builds the image, and starts the containers.
+
 ## 📁 Project Structure
 
 ```
