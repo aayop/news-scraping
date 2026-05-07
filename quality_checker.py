@@ -308,7 +308,7 @@ class DataQualityChecker:
     def run_quality_checks(self):
         """Run all data quality checks."""
         print("=" * 70)
-        print("🔍 DATA QUALITY CHECKS")
+        print("[QUALITY] DATA QUALITY CHECKS")
         print("=" * 70)
 
         self.check_bronze_layer()
@@ -319,7 +319,7 @@ class DataQualityChecker:
 
         # Print summary
         print("\n" + "=" * 70)
-        print("📊 QUALITY CHECK SUMMARY")
+        print("[SUMMARY] QUALITY CHECK SUMMARY")
         print("=" * 70)
         print(f"Files checked: Bronze({self.stats['bronze_files']}) Silver({self.stats['silver_files']}) Gold({self.stats['gold_files']})")
         print(f"Total articles: {self.stats['total_articles']}")
@@ -343,11 +343,11 @@ class DataQualityChecker:
 
         print("\n" + "=" * 70)
         if self.stats["quality_score"] >= 90:
-            print("✅ EXCELLENT: Data quality is very good!")
+            print("[EXCELLENT] Data quality is very good!")
         elif self.stats["quality_score"] >= 75:
-            print("⚠️  GOOD: Data quality is acceptable but could be improved")
+            print("[GOOD] Data quality is acceptable but could be improved")
         else:
-            print("❌ POOR: Data quality needs attention")
+            print("[POOR] Data quality needs attention")
         print("=" * 70)
 
         return self.stats["quality_score"] >= 75  # Return True if quality is acceptable

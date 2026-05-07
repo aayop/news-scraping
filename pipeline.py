@@ -345,7 +345,13 @@ const DATA = {{
         print("\n" + "=" * 80)
 
         # Overall status
-        failed_steps = [s for s in steps if self.stats[s[0].lower().replace(" ", "_")]["status"] == "failed"]
+        key_mapping = {
+            "Web Scraping": "scraping",
+            "Silver Processing": "silver",
+            "Gold Analytics": "gold",
+            "Quality Checks": "quality"
+        }
+        failed_steps = [s for s in steps if self.stats[key_mapping[s[0]]]["status"] == "failed"]
         if failed_steps:
             print("❌ PIPELINE FAILED")
             print(f"Failed steps: {', '.join([s[0] for s in failed_steps])}")

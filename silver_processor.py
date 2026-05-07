@@ -265,12 +265,12 @@ def run_silver_processor():
 
     # Print summary
     print("\n" + "=" * 60)
-    print("✅ Silver Layer Processing Complete!")
+    print("[SUCCESS] Silver Layer Processing Complete!")
     print(f"   Total articles processed : {stats['total']}")
-    print(f"   ✅ Valid articles         : {stats['valid']}")
-    print(f"   ❌ Invalid (quality)      : {stats['invalid']}")
-    print(f"   🔁 Duplicates removed     : {stats['duplicate']}")
-    print(f"   💾 Saved to              : {output_file}")
+    print(f"   [OK] Valid articles       : {stats['valid']}")
+    print(f"   [ERROR] Invalid (quality) : {stats['invalid']}")
+    print(f"   [DUPE] Duplicates removed : {stats['duplicate']}")
+    print(f"   [SAVE] Saved to           : {output_file}")
     print("=" * 60)
 
     return all_silver

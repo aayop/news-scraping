@@ -54,7 +54,7 @@ def load_silver_data() -> list[dict]:
         with open(f, "r", encoding="utf-8") as fp:
             all_articles.extend(json.load(fp))
 
-    print(f"✅ Loaded {len(all_articles)} articles from Silver layer")
+    print(f"[OK] Loaded {len(all_articles)} articles from Silver layer")
     return all_articles
 
 
@@ -144,19 +144,19 @@ def save_gold_table(data, filename: str):
     filepath = f"{GOLD_DIR}/{filename}"
     with open(filepath, "w", encoding="utf-8") as f:
         json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"   💾 {filename}")
+    print(f"   [SAVE] {filename}")
 
 
 def run_gold_processor():
     print("=" * 60)
-    print("🥇 Building Gold Layer Analytics Tables")
+    print("[GOLD] Building Gold Layer Analytics Tables")
     print("=" * 60)
 
     articles = load_silver_data()
     if not articles:
         return
 
-    print("\n📊 Generating analytics tables...")
+    print("\n[ANALYTICS] Generating analytics tables...")
 
     # Build and save all Gold tables
     save_gold_table(articles_by_source(articles),   "articles_by_source.json")
@@ -167,26 +167,26 @@ def run_gold_processor():
     save_gold_table(summary_stats(articles),        "summary_stats.json")
 
     # Print preview
-    print("\n📈 Articles by Source:")
+    print("\n[STATS] Articles by Source:")
     for row in articles_by_source(articles):
         print(f"   {row['source']:<20} {row['article_count']} articles")
 
-    print("\n🌍 Articles by Language:")
+    print("\n[LANGUAGE] Articles by Language:")
     for row in articles_by_language(articles):
         print(f"   {row['language']:<15} {row['article_count']} articles")
 
-    print("\n🔑 Top 10 Keywords:")
+    print("\n[KEYWORDS] Top 10 Keywords:")
     for row in top_keywords(articles, top_n=10):
         print(f"   {row['keyword']:<20} {row['frequency']} times")
 
     stats = summary_stats(articles)
-    print(f"\n📋 Summary:")
+    print(f"\n[SUMMARY] Summary:")
     print(f"   Total articles     : {stats['total_articles']}")
     print(f"   Sources            : {stats['total_sources']}")
     print(f"   Avg content length : {stats['avg_content_length']} chars")
 
     print("\n" + "=" * 60)
-    print(f"✅ Gold layer saved to: {GOLD_DIR}/")
+    print(f"[SUCCESS] Gold layer saved to: {GOLD_DIR}/")
     print("=" * 60)
 
 
