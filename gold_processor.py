@@ -12,19 +12,17 @@ Analytics produced:
 """
 
 import json
-import os
 import re
-import glob
 import sys
 from collections import Counter
 from datetime import datetime
+
+from storage import ensure_prefix, exists, list_json, modified_at, read_json, write_json
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
     sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
-SILVER_DIR = "data_lake/silver"
-GOLD_DIR   = "data_lake/gold"
 
 # Common stop words to exclude from keyword analysis
 STOP_WORDS = {
@@ -49,15 +47,21 @@ STOP_WORDS = {
 
 def load_silver_data() -> list[dict]:
     """Load all Silver JSON files."""
-    silver_files = glob.glob(f"{SILVER_DIR}/*.json")
+    latest_snapshot = "silver/articles_silver_latest.json"
+    if exists(latest_snapshot):
+        silver_files = [latest_snapshot]
+    else:
+        silver_files = list_json("silver/")
+        if silver_files:
+            silver_files = [max(silver_files, key=lambda key: modified_at(key) or datetime.min)]
+
     if not silver_files:
-        print(f"❌ No Silver files found in {SILVER_DIR}/")
+        print("❌ No Silver files found in the Silver layer")
         return []
 
     all_articles = []
-    for f in silver_files:
-        with open(f, "r", encoding="utf-8") as fp:
-            all_articles.extend(json.load(fp))
+    for key in silver_files:
+        all_articles.extend(read_json(key))
 
     print(f"[OK] Loaded {len(all_articles)} articles from Silver layer")
     return all_articles
@@ -145,20 +149,18 @@ def summary_stats(articles: list[dict]) -> dict:
 
 def save_gold_table(data, filename: str):
     """Save a Gold analytics table as JSON."""
-    os.makedirs(GOLD_DIR, exist_ok=True)
-    filepath = f"{GOLD_DIR}/{filename}"
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(data, f, ensure_ascii=False, indent=2)
-    print(f"   [SAVE] {filename}")
+    ensure_prefix("gold")
+    storage_key = f"gold/{filename}"
+    write_json(storage_key, data)
+    print(f"   [SAVE] {storage_key}")
 
 
 def save_articles_json(articles: list[dict]):
     """Save the full article list to the Gold layer for dashboard rendering."""
-    os.makedirs(GOLD_DIR, exist_ok=True)
-    filepath = f"{GOLD_DIR}/articles.json"
-    with open(filepath, "w", encoding="utf-8") as f:
-        json.dump(articles, f, ensure_ascii=False, indent=2)
-    print("   [SAVE] articles.json")
+    ensure_prefix("gold")
+    storage_key = "gold/articles.json"
+    write_json(storage_key, articles)
+    print(f"   [SAVE] {storage_key}")
 
 
 def run_gold_processor():
@@ -201,9 +203,10 @@ def run_gold_processor():
     print(f"   Avg content length : {stats['avg_content_length']} chars")
 
     print("\n" + "=" * 60)
-    print(f"[SUCCESS] Gold layer saved to: {GOLD_DIR}/")
+    print("[SUCCESS] Gold layer saved to storage")
     print("=" * 60)
 
 
 if __name__ == "__main__":
+
     run_gold_processor()

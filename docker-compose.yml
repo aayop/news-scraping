@@ -15,8 +15,34 @@ services:
       # Add any scraping configuration here
       - SCRAPER_TIMEOUT=30
       - MAX_ARTICLES_PER_SOURCE=50
+      - DATA_LAKE_BACKEND=local
+      - DATA_LAKE_S3_ENDPOINT=http://minio:9000
+      - DATA_LAKE_S3_ACCESS_KEY=minioadmin
+      - DATA_LAKE_S3_SECRET_KEY=minioadmin
+      - DATA_LAKE_S3_BUCKET=news-data-lake
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=news_warehouse
     restart: unless-stopped
+    depends_on:
+      - minio
     command: ["python", "pipeline.py", "--skip-scraping"]  # Default to skip scraping in container
+
+  minio:
+    image: minio/minio:latest
+    container_name: news-minio
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin
+    volumes:
+      - ./minio_data:/data
+    command: ["server", "/data", "--console-address", ":9001"]
+    restart: unless-stopped
 
   # Optional: Add a web server for the dashboard
   dashboard-server:
@@ -46,7 +72,12 @@ services:
       - PYTHONUNBUFFERED=1
       - SCRAPER_TIMEOUT=30
       - MAX_ARTICLES_PER_SOURCE=50
-    command: ["sh", "-c", "while true; do echo 'Running scheduled pipeline...'; python pipeline.py; echo 'Sleeping for 6 hours...'; sleep 21600; done"]
+      - MYSQL_HOST=host.docker.internal
+      - MYSQL_PORT=3306
+      - MYSQL_USER=root
+      - MYSQL_PASSWORD=
+      - MYSQL_DATABASE=news_warehouse
+    command: ["sh", "-c", "while true; do echo 'Running scheduled pipeline...'; python pipeline.py; echo 'Sleeping for 1 hour...'; sleep 3600; done"]
     restart: unless-stopped
     profiles:
       - scheduler

@@ -8,11 +8,12 @@ Usage: python quality_checker.py
 
 import json
 import os
-import glob
 import sys
 from datetime import datetime, timedelta
 from collections import Counter
 import logging
+
+from storage import exists, list_json, modified_at, read_json
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -20,10 +21,6 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
-BRONZE_DIR = "data_lake/bronze"
-SILVER_DIR = "data_lake/silver"
-GOLD_DIR = "data_lake/gold"
 
 
 class DataQualityChecker:
@@ -35,10 +32,22 @@ class DataQualityChecker:
         self.stats = {
             "bronze_files": 0,
             "silver_files": 0,
+            "streaming_files": 0,
             "gold_files": 0,
             "total_articles": 0,
             "quality_score": 0.0
         }
+
+    def latest_silver_files(self) -> list[str]:
+        """Return the current Silver snapshot used for quality and Gold checks."""
+        latest_snapshot = "silver/articles_silver_latest.json"
+        if exists(latest_snapshot):
+            return [latest_snapshot]
+
+        silver_files = list_json("silver/")
+        if not silver_files:
+            return []
+        return [max(silver_files, key=lambda key: modified_at(key) or datetime.min)]
 
     def log_issue(self, layer: str, issue_type: str, message: str, severity: str = "ERROR"):
         """Log a data quality issue."""
@@ -61,7 +70,7 @@ class DataQualityChecker:
         """Validate Bronze layer data quality."""
         logger.info("🔍 Checking Bronze layer...")
 
-        bronze_files = glob.glob(f"{BRONZE_DIR}/*.json")
+        bronze_files = list_json("bronze/")
         self.stats["bronze_files"] = len(bronze_files)
 
         if not bronze_files:
@@ -73,8 +82,7 @@ class DataQualityChecker:
 
         for file_path in bronze_files:
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
-                    articles = json.load(f)
+                articles = read_json(file_path)
 
                 if not isinstance(articles, list):
                     self.log_issue("bronze", "format_error", f"Invalid format in {file_path}")
@@ -106,8 +114,14 @@ class DataQualityChecker:
 
         # Check for data freshness (should have recent files)
         if bronze_files:
-            latest_file = max(bronze_files, key=os.path.getctime)
-            file_age = datetime.now() - datetime.fromtimestamp(os.path.getctime(latest_file))
+            latest_time = max((modified_at(key) for key in bronze_files), default=None)
+            if latest_time:
+                if latest_time.tzinfo is None:
+                    latest_time = latest_time.replace(tzinfo=datetime.utcnow().astimezone().tzinfo)
+                file_age = datetime.now(latest_time.tzinfo) - latest_time
+            else:
+                file_age = timedelta.max
+
             if file_age > timedelta(hours=24):
                 self.log_issue("bronze", "data_freshness",
                               f"Latest Bronze data is {file_age.days} days old", "WARNING")
@@ -118,7 +132,7 @@ class DataQualityChecker:
         """Validate Silver layer data quality."""
         logger.info("🔍 Checking Silver layer...")
 
-        silver_files = glob.glob(f"{SILVER_DIR}/*.json")
+        silver_files = self.latest_silver_files()
         self.stats["silver_files"] = len(silver_files)
 
         if not silver_files:
@@ -131,8 +145,7 @@ class DataQualityChecker:
 
         for file_path in silver_files:
             try:
-                with open(file_path, "r", encoding="utf-8") as f:
-                    articles = json.load(f)
+                articles = read_json(file_path)
 
                 for article in articles:
                     processed_articles += 1
@@ -176,6 +189,42 @@ class DataQualityChecker:
         logger.info(f"   Languages: {dict(languages)}")
         logger.info(f"   Sources: {dict(sources)}")
 
+    def check_streaming_layer(self):
+        """Validate streaming article event files."""
+        logger.info("🔍 Checking Streaming layer...")
+
+        streaming_files = list_json("streaming/")
+        self.stats["streaming_files"] = len(streaming_files)
+
+        if not streaming_files:
+            self.log_issue("streaming", "missing_data", "No streaming event files found", "WARNING")
+            return
+
+        latest_events = "streaming/article_events_latest.json"
+        if not exists(latest_events):
+            self.log_issue("streaming", "missing_latest", "Missing latest streaming events snapshot", "WARNING")
+            return
+
+        try:
+            events = read_json(latest_events)
+        except Exception as e:
+            self.log_issue("streaming", "file_error", f"Error reading latest streaming events: {e}")
+            return
+
+        if not isinstance(events, list) or not events:
+            self.log_issue("streaming", "empty_data", "Latest streaming events snapshot is empty", "WARNING")
+            return
+
+        required_fields = ["event_id", "event_type", "event_time", "batch_id", "url", "payload"]
+        for event in events[:50]:
+            for field in required_fields:
+                if field not in event or not event[field]:
+                    self.log_issue("streaming", "missing_field", f"Missing {field} in streaming event", "WARNING")
+            if event.get("event_type") != "article_published":
+                self.log_issue("streaming", "invalid_event_type", f"Invalid event type: {event.get('event_type')}", "WARNING")
+
+        logger.info(f"✅ Streaming layer: {len(streaming_files)} files, {len(events)} latest events")
+
     def check_gold_layer(self):
         """Validate Gold layer analytics quality."""
         logger.info("🔍 Checking Gold layer...")
@@ -191,8 +240,8 @@ class DataQualityChecker:
 
         gold_files = []
         for filename in expected_files:
-            filepath = f"{GOLD_DIR}/{filename}"
-            if os.path.exists(filepath):
+            filepath = f"gold/{filename}"
+            if exists(filepath):
                 gold_files.append(filepath)
             else:
                 self.log_issue("gold", "missing_file", f"Missing analytics file: {filename}")
@@ -202,8 +251,7 @@ class DataQualityChecker:
         # Validate analytics data
         for filepath in gold_files:
             try:
-                with open(filepath, "r", encoding="utf-8") as f:
-                    data = json.load(f)
+                data = read_json(filepath)
 
                 filename = os.path.basename(filepath)
 
@@ -265,13 +313,12 @@ class DataQualityChecker:
 
         # Compare Bronze vs Silver article counts
         bronze_count = self.stats["total_articles"]
-        silver_files = glob.glob(f"{SILVER_DIR}/*.json")
+        silver_files = self.latest_silver_files()
         silver_count = 0
 
         for f in silver_files:
             try:
-                with open(f, "r", encoding="utf-8") as fp:
-                    silver_count += len(json.load(fp))
+                silver_count += len(read_json(f))
             except:
                 pass
 
@@ -280,12 +327,10 @@ class DataQualityChecker:
                          f"Silver ({silver_count}) much less than Bronze ({bronze_count})", "WARNING")
 
         # Check if Gold summary matches Silver
-        summary_file = f"{GOLD_DIR}/summary_stats.json"
-        if os.path.exists(summary_file):
+        summary_file = "gold/summary_stats.json"
+        if exists(summary_file):
             try:
-                with open(summary_file, "r", encoding="utf-8") as f:
-                    summary = json.load(f)
-
+                summary = read_json(summary_file)
                 gold_total = summary.get("total_articles", 0)
                 if abs(gold_total - silver_count) > 5:  # Small tolerance for processing differences
                     self.log_issue("consistency", "summary_mismatch",
@@ -318,6 +363,7 @@ class DataQualityChecker:
 
         self.check_bronze_layer()
         self.check_silver_layer()
+        self.check_streaming_layer()
         self.check_gold_layer()
         self.check_data_consistency()
         self.calculate_quality_score()
@@ -326,7 +372,7 @@ class DataQualityChecker:
         print("\n" + "=" * 70)
         print("[SUMMARY] QUALITY CHECK SUMMARY")
         print("=" * 70)
-        print(f"Files checked: Bronze({self.stats['bronze_files']}) Silver({self.stats['silver_files']}) Gold({self.stats['gold_files']})")
+        print(f"Files checked: Bronze({self.stats['bronze_files']}) Silver({self.stats['silver_files']}) Streaming({self.stats['streaming_files']}) Gold({self.stats['gold_files']})")
         print(f"Total articles: {self.stats['total_articles']}")
         print(f"Quality score: {self.stats['quality_score']:.1f}/100")
 

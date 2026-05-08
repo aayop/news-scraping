@@ -11,13 +11,13 @@ Transformations:
 """
 
 import json
-import os
 import re
-import glob
 import sys
 import logging
 from datetime import datetime
 from html.parser import HTMLParser
+
+from storage import ensure_prefix, list_json, read_json, write_json
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -25,9 +25,6 @@ if hasattr(sys.stdout, 'reconfigure'):
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
-
-BRONZE_DIR = "data_lake/bronze"
-SILVER_DIR = "data_lake/silver"
 
 
 # ─────────────────────────────────────────────
@@ -84,9 +81,21 @@ def normalize_text(text: str) -> str:
     return text
 
 
-def normalize_date(date_str: str) -> str | None:
+def normalize_date(date_str: str, scraped_at: str | None = None) -> str | None:
     """Try to parse and normalize publication date to ISO format."""
     if not date_str:
+        return None
+
+    clean_date = date_str.strip()
+
+    if re.fullmatch(r"\d{1,2}:\d{2}", clean_date):
+        if scraped_at:
+            try:
+                scraped_dt = datetime.fromisoformat(scraped_at.replace("Z", "+00:00"))
+                hour, minute = [int(part) for part in clean_date.split(":")]
+                return scraped_dt.replace(hour=hour, minute=minute, second=0, microsecond=0).strftime("%Y-%m-%dT%H:%M:%S")
+            except ValueError:
+                return None
         return None
 
     # Common date formats
@@ -103,7 +112,7 @@ def normalize_date(date_str: str) -> str | None:
 
     for fmt in formats:
         try:
-            dt = datetime.strptime(date_str.strip(), fmt)
+            dt = datetime.strptime(clean_date, fmt)
             return dt.strftime("%Y-%m-%dT%H:%M:%S")
         except ValueError:
             continue
@@ -198,7 +207,7 @@ def process_article(raw: dict) -> dict:
     source  = raw.get("source", "")
 
     language = raw.get("language") or detect_language(content, source)
-    pub_date = normalize_date(raw.get("publication_date"))
+    pub_date = normalize_date(raw.get("publication_date"), raw.get("scraped_at"))
     category = normalize_text(raw.get("category", "")) or None
 
     return {
@@ -218,40 +227,33 @@ def process_article(raw: dict) -> dict:
 
 def run_silver_processor():
     """Read all Bronze files, process them, save to Silver layer."""
-    os.makedirs(SILVER_DIR, exist_ok=True)
+    ensure_prefix("silver")
 
-    # Find all Bronze JSON files
-    bronze_files = glob.glob(f"{BRONZE_DIR}/*.json")
+    bronze_files = list_json("bronze/")
     if not bronze_files:
-        logger.warning(f"No JSON files found in {BRONZE_DIR}/")
+        logger.warning("No Bronze files found in data lake")
         return []
 
     logger.info(f"Found {len(bronze_files)} Bronze files to process")
 
     all_silver = []
-    seen_urls  = set()
+    seen_urls = set()
     stats = {"total": 0, "valid": 0, "invalid": 0, "duplicate": 0}
 
     for bronze_file in bronze_files:
         logger.info(f"Processing: {bronze_file}")
-
-        with open(bronze_file, "r", encoding="utf-8") as f:
-            raw_articles = json.load(f)
+        raw_articles = read_json(bronze_file)
 
         for raw in raw_articles:
             stats["total"] += 1
 
-            # Deduplicate by URL
             url = raw.get("url", "")
             if url in seen_urls:
                 stats["duplicate"] += 1
                 continue
             seen_urls.add(url)
 
-            # Process article
             silver = process_article(raw)
-
-            # Validate
             valid, reason = is_valid_article(silver)
             if not valid:
                 logger.warning(f"Invalid article ({reason}): {url}")
@@ -261,21 +263,20 @@ def run_silver_processor():
             all_silver.append(silver)
             stats["valid"] += 1
 
-    # Save Silver output
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    output_file = f"{SILVER_DIR}/articles_silver_{timestamp}.json"
+    output_key = f"silver/articles_silver_{timestamp}.json"
+    write_json(output_key, all_silver)
+    latest_key = "silver/articles_silver_latest.json"
+    write_json(latest_key, all_silver)
 
-    with open(output_file, "w", encoding="utf-8") as f:
-        json.dump(all_silver, f, ensure_ascii=False, indent=2)
-
-    # Print summary
     print("\n" + "=" * 60)
     print("[SUCCESS] Silver Layer Processing Complete!")
     print(f"   Total articles processed : {stats['total']}")
     print(f"   [OK] Valid articles       : {stats['valid']}")
     print(f"   [ERROR] Invalid (quality) : {stats['invalid']}")
     print(f"   [DUPE] Duplicates removed : {stats['duplicate']}")
-    print(f"   [SAVE] Saved to           : {output_file}")
+    print(f"   [SAVE] Saved to           : {output_key}")
+    print(f"   [SAVE] Latest snapshot    : {latest_key}")
     print("=" * 60)
 
     return all_silver

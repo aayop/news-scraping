@@ -7,6 +7,11 @@ import json
 import os
 import sys
 from datetime import datetime
+from pathlib import Path
+
+SCRIPT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = SCRIPT_DIR.parent
+sys.path.insert(0, str(ROOT_DIR))
 
 if hasattr(sys.stdout, 'reconfigure'):
     sys.stdout.reconfigure(encoding='utf-8', errors='replace')
@@ -18,18 +23,16 @@ from barlamane_scraper  import run_scraper as scrape_barlamane
 from akhbarona_scraper  import run_scraper as scrape_akhbarona
 from aljazeera_scraper  import run_scraper as scrape_aljazeera
 from reuters_scraper    import run_scraper as scrape_reuters
-
-BRONZE_DIR = "../data_lake/bronze"
+from storage import ensure_prefix, write_json, storage_uri
 
 
 def save_to_bronze(articles, source):
-    os.makedirs(BRONZE_DIR, exist_ok=True)
+    ensure_prefix("bronze")
     timestamp = datetime.utcnow().strftime("%Y%m%d_%H%M%S")
-    filename = f"{BRONZE_DIR}/{source}_{timestamp}.json"
-    with open(filename, "w", encoding="utf-8") as f:
-        json.dump(articles, f, ensure_ascii=False, indent=2)
-    print(f"  ✅ Saved {len(articles)} articles → {filename}")
-    return filename
+    storage_key = f"bronze/{source}_{timestamp}.json"
+    write_json(storage_key, articles)
+    print(f"  ✅ Saved {len(articles)} articles → {storage_uri(storage_key)}")
+    return storage_key
 
 
 def main():
@@ -64,7 +67,7 @@ def main():
     for name, count in results.items():
         status = "✅" if count > 0 else "❌"
         print(f"   {status} {name}: {count} articles")
-    print(f"\n   Bronze layer: {BRONZE_DIR}/")
+    print(f"\n   Bronze layer data written to storage")
     print("=" * 60)
 
 

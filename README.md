@@ -1,236 +1,350 @@
-# News Intelligence Platform
+# News Scraping Big Data Project
 
-A comprehensive news aggregation and analytics platform that scrapes, processes, and visualizes news from multiple Moroccan and international sources.
+Projet EMSI Casablanca - Filiere IADATA - Architecture de donnees
 
-## 🏗️ Architecture
+Ce projet collecte des articles depuis plusieurs sites d'actualite, les stocke dans un Data Lake, les nettoie, construit des tables analytiques et affiche les resultats dans un dashboard.
 
-The platform follows a modern data lake architecture with three layers:
+## Objectif
 
-- **Bronze Layer**: Raw scraped data (JSON files)
-- **Silver Layer**: Cleaned and normalized data
-- **Gold Layer**: Analytics and aggregated insights
+L'objectif est de montrer une architecture data complete autour des articles de presse :
 
-## 📊 Features
+- collecte web scraping
+- ingestion batch
+- ingestion streaming sous forme d'evenements
+- Data Lake
+- architecture Medaillon Bronze, Silver, Gold
+- transformations ETL
+- qualite des donnees
+- Data Warehouse MySQL avec XAMPP
+- dashboard de visualisation
+- orchestration avec Airflow
+- execution possible avec Docker
 
-- **Multi-source scraping**: 6 news sources (Hespress, BBC, Al Jazeera, Reuters, Barlamane, Akhbarona)
-- **Data quality checks**: Comprehensive validation across all layers
-- **Real-time dashboard**: Interactive visualization with charts and analytics
-- **Automated pipeline**: Orchestrated ETL pipeline with error handling
-- **Docker containerization**: Production-ready deployment
-- **CI/CD**: GitHub Actions for automated testing and deployment
+## Architecture
 
-## 🚀 Quick Start
-
-### Local Development
-
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd news_scraping_project
-   ```
-
-2. **Install dependencies**
-   ```bash
-   cd scrapers
-   pip install -r requirements.txt
-   cd ..
-   ```
-
-3. **Run the complete pipeline**
-   ```bash
-   python pipeline.py
-   ```
-
-4. **View the dashboard**
-   ```bash
-   python -m http.server 8000
-   # Open http://localhost:8000/dashboard.html
-   ```
-
-### Docker Deployment
-
-1. **Build and run with Docker Compose**
-   ```bash
-   docker-compose up --build
-   ```
-
-2. **Run with dashboard server**
-   ```bash
-   docker-compose --profile dashboard up --build
-   # Dashboard available at http://localhost:8080
-   ```
-
-3. **Run scheduled pipeline**
-   ```bash
-   docker-compose --profile scheduler up
-   ```
-
-### Deployment helper script
-
-A shell helper script is included for teammates to validate and start the Docker deployment from the project root.
-
-```bash
-bash docker_setup.sh
+```text
+Sites d'actualite
+        |
+        v
+Scraping Python
+        |
+        v
+Bronze: donnees brutes JSON
+        |
+        v
+Silver: nettoyage, normalisation, langue, deduplication
+        |
+        +--> Streaming: evenements article_published
+        |
+        v
+Gold: tables analytiques JSON
+        |
+        v
+Data Warehouse MySQL: news_warehouse
+        |
+        v
+Dashboard HTML
 ```
 
-The script verifies required files, checks Docker and Compose, builds the image, and starts the containers.
+## Sources scrapees
 
-## 📁 Project Structure
+- Hespress
+- Akhbarona
+- Barlamane
+- BBC News
+- Al Jazeera
+- Reuters
 
-```
+Les champs collectes sont principalement :
+
+- titre
+- auteur
+- date de publication
+- categorie
+- contenu
+- source
+- URL
+- date de scraping
+
+## Structure du projet
+
+```text
 news_scraping_project/
-├── scrapers/                    # Web scraping modules
-│   ├── main_scraper.py         # Orchestrates all scrapers
-│   ├── *_scraper.py            # Individual source scrapers
-│   └── requirements.txt        # Python dependencies
-├── data_lake/                  # Data lake storage
-│   ├── bronze/                 # Raw scraped data
-│   ├── silver/                 # Cleaned data
-│   └── gold/                   # Analytics tables
-├── dashboard.html              # Interactive dashboard
-├── silver_processor.py         # Data cleaning pipeline
-├── gold_processor.py           # Analytics generation
-├── quality_checker.py          # Data quality validation
-├── pipeline.py                 # Main orchestration script
-├── Dockerfile                  # Container definition
-├── docker-compose.yml          # Multi-container setup
-├── nginx.conf                  # Web server config
-└── .github/workflows/          # CI/CD pipelines
+|-- scrapers/
+|   |-- main_scraper.py
+|   |-- *_scraper.py
+|   `-- requirements.txt
+|-- dags/
+|   `-- news_pipeline_dag.py
+|-- data_lake/
+|   |-- bronze/
+|   |-- silver/
+|   |-- streaming/
+|   `-- gold/
+|-- reports/
+|-- dashboard.html
+|-- pipeline.py
+|-- silver_processor.py
+|-- streaming_ingestion.py
+|-- gold_processor.py
+|-- warehouse_loader.py
+|-- quality_checker.py
+|-- storage.py
+|-- Dockerfile
+`-- docker-compose.yml
 ```
 
-## 🔧 Usage
+## Installation locale
 
-### Pipeline Commands
+Installer les dependances :
 
 ```bash
-# Run complete pipeline
-python pipeline.py
-
-# Skip scraping (use existing data)
-python pipeline.py --skip-scraping
-
-# Force continue on failures
-python pipeline.py --force
-
-# Run individual components
-python scrapers/main_scraper.py    # Scraping only
-python silver_processor.py         # Cleaning only
-python gold_processor.py           # Analytics only
-python quality_checker.py          # Quality checks only
+cd scrapers
+pip install -r requirements.txt
+cd ..
 ```
 
-### Docker Commands
+Sur Windows, si `python` ne marche pas, utiliser `py`.
+
+## Lancer le pipeline
+
+Pipeline complet :
 
 ```bash
-# Build image
-docker build -t news-intelligence .
-
-# Run container
-docker run -v $(pwd)/data_lake:/app/data_lake news-intelligence
-
-# Run with Docker Compose
-docker-compose up news-intelligence
-docker-compose up dashboard-server  # With web server
+py pipeline.py
 ```
 
-## 📈 Dashboard
-
-The interactive dashboard provides:
-
-- **Real-time statistics**: Article counts, sources, languages
-- **Source distribution**: Pie/donut charts by news source
-- **Language analysis**: Content language breakdown
-- **Temporal trends**: Articles over time
-- **Keyword analysis**: Trending topics and frequency
-- **Recent articles**: Latest news feed
-
-Access the dashboard at `http://localhost:8000/dashboard.html` when running locally.
-
-## 🔍 Data Quality
-
-The platform includes comprehensive quality checks:
-
-- **Completeness**: Required fields validation
-- **Consistency**: Cross-layer data integrity
-- **Accuracy**: Content and metadata validation
-- **Timeliness**: Data freshness monitoring
-- **Uniqueness**: Duplicate detection
-
-Run quality checks: `python quality_checker.py`
-
-## 🔒 Security & Best Practices
-
-- **Container security**: Non-root user, minimal base image
-- **Dependency scanning**: Automated vulnerability checks
-- **Code quality**: Linting and testing in CI/CD
-- **Data persistence**: Volume mounting for data retention
-- **Error handling**: Comprehensive logging and recovery
-
-## 🤝 Contributing
-
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Add tests if applicable
-5. Run the pipeline: `python pipeline.py`
-6. Submit a pull request
-
-## 📝 Configuration
-
-### Environment Variables
+Pipeline sans refaire le scraping :
 
 ```bash
-# Scraping configuration
-SCRAPER_TIMEOUT=30
-MAX_ARTICLES_PER_SOURCE=50
-
-# Pipeline options
-PYTHONPATH=/app
-PYTHONUNBUFFERED=1
+py pipeline.py --skip-scraping
 ```
 
-### GitHub Secrets (for CI/CD)
+Lancer les etapes separement :
 
 ```bash
-DOCKER_USERNAME=your-dockerhub-username
-DOCKER_PASSWORD=your-dockerhub-password
-SERVER_HOST=your-server-ip
-SERVER_USER=your-server-username
-SERVER_SSH_KEY=your-ssh-private-key
+py scrapers/main_scraper.py
+py silver_processor.py
+py streaming_ingestion.py
+py gold_processor.py
+py warehouse_loader.py
+py quality_checker.py
 ```
 
-## 📊 Monitoring & Logs
+## Data Lake
 
-- **Pipeline reports**: `reports/pipeline_report_*.json`
-- **Quality reports**: `reports/quality_report_*.json`
-- **Application logs**: `logs/` directory
-- **Container logs**: `docker-compose logs`
+Les donnees sont organisees en couches :
 
-## 🚨 Troubleshooting
+- `data_lake/bronze/` : articles bruts recuperes par les scrapers
+- `data_lake/silver/` : articles nettoyes et dedupliques
+- `data_lake/streaming/` : evenements `article_published`
+- `data_lake/gold/` : tables analytiques
 
-### Common Issues
+Le fichier `storage.py` permet d'utiliser soit le disque local, soit un stockage compatible S3 comme MinIO.
 
-1. **Scraping failures**: Check network connectivity and source URLs
-2. **Quality check failures**: Review data in `data_lake/` directories
-3. **Dashboard not loading**: Ensure data exists in Gold layer
-4. **Docker build failures**: Check Docker and system resources
+## Batch ingestion
 
-### Debug Mode
+Le batch est gere par Airflow dans :
+
+```text
+dags/news_pipeline_dag.py
+```
+
+Le DAG principal est planifie avec :
+
+```text
+@hourly
+```
+
+Donc le scraping et le traitement peuvent tourner automatiquement chaque heure.
+
+## Streaming ingestion
+
+Pour le streaming, chaque article nettoye est transforme en evenement :
+
+```text
+article_published
+```
+
+Les evenements sont sauvegardes dans :
+
+```text
+data_lake/streaming/
+```
+
+Ils sont aussi copies dans MySQL dans la table :
+
+```text
+news_warehouse.streaming_article_events
+```
+
+Cette partie simule un flux d'evenements. Dans une version production, on pourrait remplacer cette simulation par Kafka ou RabbitMQ.
+
+## Data Warehouse avec XAMPP
+
+Le Data Warehouse utilise MySQL/MariaDB de XAMPP.
+
+1. Ouvrir XAMPP Control Panel
+2. Demarrer MySQL
+3. Lancer :
 
 ```bash
-# Run with verbose logging
-PYTHONUNBUFFERED=1 python pipeline.py
-
-# Test individual components
-python -c "import silver_processor; print('OK')"
+py warehouse_loader.py
 ```
 
-## 📄 License
+La base creee est :
 
-This project is licensed under the MIT License - see the LICENSE file for details.
+```text
+news_warehouse
+```
 
-## 🙏 Acknowledgments
+Tables principales :
 
-- Built for EMSI Casablanca — IADATA 2025/2026
-- Big Data News Analytics Platform
-- Multi-language support (Arabic, French, English)
+- `fact_articles`
+- `fact_articles_by_day`
+- `fact_keywords`
+- `streaming_article_events`
+- `dim_source`
+- `dim_category`
+- `dim_language`
+- `warehouse_summary`
+
+Parametres par defaut :
+
+```text
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=root
+MYSQL_PASSWORD=
+MYSQL_DATABASE=news_warehouse
+```
+
+Pour verifier dans phpMyAdmin :
+
+```text
+http://localhost/phpmyadmin
+```
+
+## Dashboard
+
+Le dashboard est dans :
+
+```text
+dashboard.html
+```
+
+Pour le lancer en local :
+
+```bash
+py -m http.server 8000
+```
+
+Puis ouvrir :
+
+```text
+http://localhost:8000/dashboard.html
+```
+
+Le dashboard affiche :
+
+- nombre total d'articles
+- repartition par source
+- repartition par langue
+- articles par date
+- mots cles frequents
+- derniers articles
+
+## Qualite des donnees
+
+Le fichier `quality_checker.py` verifie :
+
+- titre manquant
+- contenu trop court
+- URL manquante
+- format de date
+- coherence entre Bronze, Silver et Gold
+- presence des fichiers analytiques
+- presence des evenements streaming
+
+Les rapports sont sauvegardes dans :
+
+```text
+reports/
+```
+
+## Docker
+
+Le projet contient :
+
+- `Dockerfile`
+- `docker-compose.yml`
+
+Lancer avec Docker Compose :
+
+```bash
+docker-compose up --build
+```
+
+Lancer le dashboard avec Nginx :
+
+```bash
+docker-compose --profile dashboard up --build
+```
+
+Lancer le scheduler :
+
+```bash
+docker-compose --profile scheduler up
+```
+
+Si le pipeline tourne dans Docker et doit se connecter au MySQL de XAMPP sur Windows, utiliser :
+
+```text
+MYSQL_HOST=host.docker.internal
+```
+
+## Airflow
+
+Le DAG Airflow suit cet ordre :
+
+```text
+Scraping -> Silver -> Streaming -> Gold -> Warehouse -> Quality
+```
+
+Cela montre l'orchestration du pipeline complet.
+
+## Gouvernance et tracabilite
+
+La tracabilite est assuree avec :
+
+- `scraped_at`
+- `processed_at`
+- `loaded_at`
+- rapports de pipeline
+- rapports de qualite
+- separation Bronze / Silver / Gold
+- conservation des fichiers historiques dans le Data Lake
+
+## Commandes utiles
+
+Verifier la base MySQL :
+
+```bash
+C:\xampp\mysql\bin\mysql.exe -uroot -e "USE news_warehouse; SHOW TABLES;"
+```
+
+Verifier le nombre d'articles :
+
+```bash
+C:\xampp\mysql\bin\mysql.exe -uroot -e "USE news_warehouse; SELECT COUNT(*) FROM fact_articles;"
+```
+
+Verifier les evenements streaming :
+
+```bash
+C:\xampp\mysql\bin\mysql.exe -uroot -e "USE news_warehouse; SELECT COUNT(*) FROM streaming_article_events;"
+```
+
+## Remarque
+
+Le projet utilise surtout Python pour rester simple a executer pendant la presentation. Les composants comme MinIO, Docker, Airflow et MySQL montrent comment la solution peut etre deployee dans une architecture data plus complete.

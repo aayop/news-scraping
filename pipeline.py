@@ -5,9 +5,11 @@ Orchestrates the complete data pipeline from scraping to analytics.
 Pipeline Steps:
 1. Web Scraping (Bronze Layer)
 2. Data Cleaning (Silver Layer)
-3. Analytics (Gold Layer)
-4. Quality Checks
-5. Dashboard Update
+3. Streaming Events
+4. Analytics (Gold Layer)
+5. Data Warehouse Load
+6. Quality Checks
+7. Dashboard Update
 
 Usage: python pipeline.py [--skip-scraping] [--force]
 """
@@ -20,6 +22,8 @@ import subprocess
 import os
 import json
 import logging
+
+from storage import ensure_prefix, exists, list_json, read_json, storage_uri, get_backend_description
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
@@ -39,7 +43,9 @@ class PipelineRunner:
         self.stats = {
             "scraping": {"status": "pending", "duration": 0, "articles": 0},
             "silver": {"status": "pending", "duration": 0, "articles": 0},
+            "streaming": {"status": "pending", "duration": 0, "events": 0},
             "gold": {"status": "pending", "duration": 0, "tables": 0},
+            "warehouse": {"status": "pending", "duration": 0, "tables": 0},
             "quality": {"status": "pending", "duration": 0, "score": 0.0}
         }
 
@@ -144,17 +150,42 @@ class PipelineRunner:
 
         if success:
             self.stats["gold"]["status"] = "completed"
-            # Count generated tables
-            gold_dir = "data_lake/gold"
-            if os.path.exists(gold_dir):
-                tables = len([f for f in os.listdir(gold_dir) if f.endswith('.json')])
-                self.stats["gold"]["tables"] = tables
+            gold_files = list_json("gold/")
+            self.stats["gold"]["tables"] = len(gold_files)
             logger.info(f"✅ Gold processing completed in {duration:.1f}s")
             return True
         else:
             self.stats["gold"]["status"] = "failed"
             logger.error(f"❌ Gold processing failed: {output}")
             return False
+
+    def step_streaming_ingestion(self) -> bool:
+        """Step 3: Publish each article as a streaming event."""
+        start_time = time.time()
+        logger.info("Publishing article events to the streaming layer...")
+
+        success, output = self.run_command(
+            f"\"{sys.executable}\" streaming_ingestion.py",
+            "Publishing streaming article events"
+        )
+
+        duration = time.time() - start_time
+        self.stats["streaming"]["duration"] = round(duration, 2)
+
+        if success:
+            self.stats["streaming"]["status"] = "completed"
+            for line in output.splitlines():
+                if "Events" in line:
+                    try:
+                        self.stats["streaming"]["events"] = int(line.split(":")[1].strip())
+                    except Exception:
+                        pass
+            logger.info(f"Streaming ingestion completed in {duration:.1f}s")
+            return True
+
+        self.stats["streaming"]["status"] = "failed"
+        logger.error(f"Streaming ingestion failed: {output}")
+        return False
 
     def step_quality_checks(self) -> bool:
         """Step 4: Run data quality validation."""
@@ -186,23 +217,44 @@ class PipelineRunner:
             logger.error(f"❌ Quality checks failed: {output}")
             return False
 
+    def step_warehouse_load(self) -> bool:
+        """Step 4: Load Gold analytics into the MySQL data warehouse."""
+        start_time = time.time()
+        logger.info("Loading Gold tables into the data warehouse...")
+
+        success, output = self.run_command(
+            f"\"{sys.executable}\" warehouse_loader.py",
+            "Loading MySQL warehouse"
+        )
+
+        duration = time.time() - start_time
+        self.stats["warehouse"]["duration"] = round(duration, 2)
+
+        if success:
+            self.stats["warehouse"]["status"] = "completed"
+            self.stats["warehouse"]["tables"] = sum(
+                1
+                for line in output.splitlines()
+                if any(label in line for label in ["Sources", "Categories", "Languages", "Dates", "Keywords"])
+            )
+            logger.info(f"Warehouse load completed in {duration:.1f}s")
+            return True
+
+        self.stats["warehouse"]["status"] = "failed"
+        logger.error(f"Warehouse load failed: {output}")
+        return False
+
     def update_dashboard_data(self):
         """Update dashboard with latest data from Gold layer."""
         logger.info("📊 Updating dashboard data...")
 
         try:
-            # Load Gold layer data
-            gold_dir = "data_lake/gold"
-
             dashboard_data = {}
 
-            # Load summary stats
-            summary_file = f"{gold_dir}/summary_stats.json"
-            if os.path.exists(summary_file):
-                with open(summary_file, "r", encoding="utf-8") as f:
-                    dashboard_data["summary"] = json.load(f)
+            summary_file = "gold/summary_stats.json"
+            if exists(summary_file):
+                dashboard_data["summary"] = read_json(summary_file)
 
-            # Load analytics tables
             analytics_files = [
                 ("bySource", "articles_by_source.json"),
                 ("byLanguage", "articles_by_language.json"),
@@ -211,25 +263,20 @@ class PipelineRunner:
             ]
 
             for key, filename in analytics_files:
-                filepath = f"{gold_dir}/{filename}"
-                if os.path.exists(filepath):
-                    with open(filepath, "r", encoding="utf-8") as f:
-                        dashboard_data[key] = json.load(f)
+                storage_key = f"gold/{filename}"
+                if exists(storage_key):
+                    dashboard_data[key] = read_json(storage_key)
 
-            # Load a few sample articles for the table
-            silver_dir = "data_lake/silver"
-            silver_files = [f"{silver_dir}/{f}" for f in os.listdir(silver_dir) if f.endswith('.json')] if os.path.exists(silver_dir) else []
-
+            silver_files = list_json("silver/")
             sample_articles = []
-            for sf in silver_files[:2]:  # Load from first 2 files
+            for sf in silver_files[:2]:
                 try:
-                    with open(sf, "r", encoding="utf-8") as f:
-                        articles = json.load(f)
-                        sample_articles.extend(articles[:10])  # 10 articles per file
-                except:
+                    articles = read_json(sf)
+                    sample_articles.extend(articles[:10])
+                except Exception:
                     pass
 
-            dashboard_data["articles"] = sample_articles[:20]  # Max 20 for dashboard
+            dashboard_data["articles"] = sample_articles[:20]
 
             # Update dashboard HTML with new data
             self._update_dashboard_html(dashboard_data)
@@ -301,7 +348,9 @@ const DATA = {{
         required_files = [
             "scrapers/main_scraper.py",
             "silver_processor.py",
+            "streaming_ingestion.py",
             "gold_processor.py",
+            "warehouse_loader.py",
             "quality_checker.py"
         ]
 
@@ -314,12 +363,11 @@ const DATA = {{
             logger.error(f"❌ Missing required files: {missing_files}")
             return False
 
-        # Check if data directories exist
-        data_dirs = ["data_lake/bronze", "data_lake/silver", "data_lake/gold"]
-        for d in data_dirs:
-            os.makedirs(d, exist_ok=True)
+        # Ensure data lake prefixes exist
+        for prefix in ["bronze", "silver", "gold"]:
+            ensure_prefix(prefix)
 
-        logger.info("✅ Prerequisites check passed")
+        logger.info(f"✅ Prerequisites check passed ({get_backend_description()})")
         return True
 
     def print_summary(self):
@@ -337,7 +385,9 @@ const DATA = {{
         steps = [
             ("Web Scraping", self.stats["scraping"]),
             ("Silver Processing", self.stats["silver"]),
+            ("Streaming Events", self.stats["streaming"]),
             ("Gold Analytics", self.stats["gold"]),
+            ("Warehouse Load", self.stats["warehouse"]),
             ("Quality Checks", self.stats["quality"])
         ]
 
@@ -356,7 +406,11 @@ const DATA = {{
                 extra_info = f" - {stat['articles']} articles"
             elif name == "Silver Processing" and stat.get("articles"):
                 extra_info = f" - {stat['articles']} articles"
+            elif name == "Streaming Events" and stat.get("events"):
+                extra_info = f" - {stat['events']} events"
             elif name == "Gold Analytics" and stat.get("tables"):
+                extra_info = f" - {stat['tables']} tables"
+            elif name == "Warehouse Load" and stat.get("tables"):
                 extra_info = f" - {stat['tables']} tables"
             elif name == "Quality Checks" and stat.get("score"):
                 extra_info = f" - Score: {stat['score']:.1f}/100"
@@ -369,7 +423,9 @@ const DATA = {{
         key_mapping = {
             "Web Scraping": "scraping",
             "Silver Processing": "silver",
+            "Streaming Events": "streaming",
             "Gold Analytics": "gold",
+            "Warehouse Load": "warehouse",
             "Quality Checks": "quality"
         }
         failed_steps = [s for s in steps if self.stats[key_mapping[s[0]]]["status"] == "failed"]
@@ -424,7 +480,9 @@ const DATA = {{
         steps = [
             ("scraping", self.step_scraping),
             ("silver", self.step_silver_processing),
+            ("streaming", self.step_streaming_ingestion),
             ("gold", self.step_gold_processing),
+            ("warehouse", self.step_warehouse_load),
             ("quality", self.step_quality_checks)
         ]
 

@@ -442,23 +442,473 @@
 // when served from a local server or the Docker dashboard service.
 
 // ── PASTE YOUR GOLD DATA HERE ──────────────────────────────────────────────
+
+
+
+
+
+
+
 const DATA = {
   summary: {
-    total_articles: 0,
-    total_sources: 0,
-    sources: [],
-    languages: [],
-    avg_content_length: 0,
-    generated_at: null,
+  "total_articles": 233,
+  "total_sources": 5,
+  "sources": [
+    "Barlamane",
+    "Hespress",
+    "Al Jazeera",
+    "BBC News",
+    "Akhbarona"
+  ],
+  "languages": [
+    "ar",
+    "en"
+  ],
+  "avg_content_length": 2759.2,
+  "generated_at": "2026-05-08T21:36:15.422744"
+},
+  bySource: [
+  {
+    "source": "BBC News",
+    "article_count": 88
   },
-  bySource: [],
-  byLanguage: [],
-  byDate: [],
-  byCategory: [],
-  keywords: [],
-  articles: [],
+  {
+    "source": "Hespress",
+    "article_count": 45
+  },
+  {
+    "source": "Al Jazeera",
+    "article_count": 44
+  },
+  {
+    "source": "Akhbarona",
+    "article_count": 36
+  },
+  {
+    "source": "Barlamane",
+    "article_count": 20
+  }
+],
+  byLanguage: [
+  {
+    "language_code": "en",
+    "language": "English",
+    "article_count": 132
+  },
+  {
+    "language_code": "ar",
+    "language": "Arabic",
+    "article_count": 101
+  }
+],
+  byDate: [
+  {
+    "date": "2026-05-08",
+    "article_count": 156
+  },
+  {
+    "date": "2026-05-07",
+    "article_count": 67
+  },
+  {
+    "date": "2026-05-06",
+    "article_count": 8
+  },
+  {
+    "date": "2026-05-05",
+    "article_count": 1
+  },
+  {
+    "date": "2026-04-16",
+    "article_count": 1
+  }
+],
+  keywords: [
+  {
+    "keyword": "iran",
+    "frequency": 184
+  },
+  {
+    "keyword": "\u0627\u0644\u062a\u064a",
+    "frequency": 175
+  },
+  {
+    "keyword": "people",
+    "frequency": 174
+  },
+  {
+    "keyword": "trump",
+    "frequency": 165
+  },
+  {
+    "keyword": "there",
+    "frequency": 158
+  },
+  {
+    "keyword": "told",
+    "frequency": 139
+  },
+  {
+    "keyword": "world",
+    "frequency": 136
+  },
+  {
+    "keyword": "year",
+    "frequency": 134
+  },
+  {
+    "keyword": "time",
+    "frequency": 124
+  },
+  {
+    "keyword": "other",
+    "frequency": 118
+  },
+  {
+    "keyword": "first",
+    "frequency": 118
+  },
+  {
+    "keyword": "\u0627\u0644\u0645\u063a\u0631\u0628\u064a\u0629",
+    "frequency": 113
+  },
+  {
+    "keyword": "some",
+    "frequency": 109
+  },
+  {
+    "keyword": "\u0627\u0644\u0630\u064a",
+    "frequency": 107
+  },
+  {
+    "keyword": "president",
+    "frequency": 107
+  },
+  {
+    "keyword": "party",
+    "frequency": 105
+  },
+  {
+    "keyword": "being",
+    "frequency": 104
+  },
+  {
+    "keyword": "since",
+    "frequency": 103
+  },
+  {
+    "keyword": "while",
+    "frequency": 101
+  },
+  {
+    "keyword": "including",
+    "frequency": 100
+  },
+  {
+    "keyword": "between",
+    "frequency": 99
+  },
+  {
+    "keyword": "\u062e\u0644\u0627\u0644",
+    "frequency": 96
+  },
+  {
+    "keyword": "against",
+    "frequency": 96
+  },
+  {
+    "keyword": "last",
+    "frequency": 95
+  },
+  {
+    "keyword": "three",
+    "frequency": 92
+  },
+  {
+    "keyword": "before",
+    "frequency": 91
+  },
+  {
+    "keyword": "country",
+    "frequency": 90
+  },
+  {
+    "keyword": "state",
+    "frequency": 90
+  },
+  {
+    "keyword": "through",
+    "frequency": 90
+  },
+  {
+    "keyword": "thursday",
+    "frequency": 88
+  }
+],
+  articles: [
+  {
+    "title": "US issues new Cuba sanctions as UN experts warn of  energy starvation",
+    "author": null,
+    "publication_date": "2026-05-07T20:10:44",
+    "category": "top_news",
+    "content": "The United States has imposed a host of new sanctions related to Cuba, amid amonths-long pressure campaignagainst the island nation. The sanctions on Thursday were announced hours after United Nations experts decried Washington s effective fuel blockade of the island as tantamount to  energy starvation . The measures target Grupo de Administracion Empresarial SA  GAESA , a conglomerate  controlled by the country s military with ties to nearly all segments of its economy. They also targeted Ania Guillermina Lastres Morera, the executive president of GAESA and Moa Nickel SA  MNSA , a joint venture between Toronto-based Sherritt  International Corp and Cuba s state-owned  nickel company. Sherritt said in a statement on its website on Thursday that it had  suspended its direct participation in joint venture activities in Cuba following the sanctions. In a statement posted on X, US Secretary of State Marco Rubio said the sanctions  demonstrate that the Trump Administration will not stand by while Cuba s communist regime threatens our national security in our hemisphere .  We will continue to take action until the regime takes all necessary political and economic reforms,  he said. Cuba s government did not immediately reply to the latest round of sanctions, but condemned anearlier roundannounced this week as  unilateral coercive measures  and  collective punishment on the Cuban people . The Trump administration has heaped increasing pressure on Cuba s communist government following the January 3 abduction of Venezuelan leader Nicolas Maduro. Washington has since staunched Venezuelan oil deliveries to Cuba, long considered a lifeline. Trump also issued an executive order creating a path to sanction any country that delivers fuel to the island, effectively imposing a blockade. Trump has alsorepeatedly threatenedmilitary action to topple the country s government. On Thursday, three UN special rapporteurs condemned what they called the  unlawful blockade , which they said  is not only disrupting daily life but also undermining the enjoyment of a wide range of human rights . They defined  energy starvation  as  a condition in which the lack of fuel cripples the functioning of essential services required for a dignified life . All told, only one Russian oil tanker has reached Cuba in recent months, compounding an energy crisis already driven by economic stagnation. The experts pointed to reports that fuel scarcity was preventing people from reaching hospitals and children from attending school, adding that the country s health system is reportedly facing a backlog of more than 96,000 surgeries, including 11,000 for children.  Energy starvation as a coercive tool is incompatible with international human rights norms,  they said.",
+    "content_length": 2766,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/us-issues-new-cuba-sanctions-as-un-experts-warn-of-energy-starvation?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:39.512452",
+    "processed_at": "2026-05-07T20:51:15.582825"
+  },
+  {
+    "title": "This is my last voice note : how piracy returned to Somalia and Yemen",
+    "author": null,
+    "publication_date": "2026-05-07T19:51:14",
+    "category": "top_news",
+    "content": "Piracy is rising again near Somalia. Since April 20, at least three ships have been hijacked off Somali waters and one near the Yemeni coast. A sailor s voice note from a seized vessel has spread online. As the Iran war shakes the region, is it fueling attacks on key shipping routes? In this episode: Mohamed Gabobe   Mohamed_Gabobe , Journalist Episode credits: This episode was produced by Marcos Bartolom\u00e9 and Sar\u00ed el-Khalili with Spencer Cline, Tuleen Barakat, Catherine Nouhan, and our host, Malika Bilal. It was edited by Tamara Khandaker. Our sound designer is Alex Roldan. This episode was mixed by Rick Rush. Our video editors are Hisham Abu Salah and Mohannad al-Melhem. Alexandra Locke is The Take s executive producer. Connect with us:  AJEPodcasts onX,Instagram,Facebook, andYouTube",
+    "content_length": 796,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/video/the-take-2/2026/5/7/aje-onl-aj_tt_som_waratsea_full-060526?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:41.136485",
+    "processed_at": "2026-05-07T20:51:15.583117"
+  },
+  {
+    "title": "Gulf states urge UN action to ensure Strait of Hormuz safety",
+    "author": null,
+    "publication_date": "2026-05-07T19:32:23",
+    "category": "top_news",
+    "content": "Gulf states are pushing a United Nations Security Council resolution that threatens Iran with sanctions and other measures if it does not halt attacks on ships in the Strait of Hormuz, stop imposing  illegal tolls , and disclose the location of all mines to allow freedom of navigation. Speaking at the UN on Thursday, top diplomats from Qatar, Bahrain and the United Arab Emirates  UAE  stressed the importance of resuming pre-war traffic levels in the narrow waterway through which about a fifth of global energy exports pass in peacetime. Ensuring the strait remains open is a  demand set forth  by UN conventions, as well as a  shared international responsibility,  said Qatar s ambassador to the UN, Alya Ahmed Saif al-Thani. The current situation  not only jeopardises global economic stability and energy security but also worsens humanitarian crises and undermines regional stability,  she added. The three Gulf nations co-drafting the resolution, along with Saudi Arabia, Kuwait and the United States, also demand that Iran  immediately participate in and enable  UN efforts to establish a humanitarian corridor in the strait to deliver vital aid, fertiliser and other goods. The oil and gas-rich countries have found themselves on the front line of the war between Tehran and Washington. After the US and Israel started attacking Iran in late February, the Islamic Republic has responded by striking energy and civilian infrastructure in neighbouring countries around the Gulf. Iran has also brought traffic through the Strait of Hormuz to a near total standstill, making transit too risky. While Saudi Arabia and the UAE have pipelines to bypass the narrow waterway and allow some exports, other Gulf nations, such as Qatar, have been forced to halt energy exports. As global gas and oil prices soared, the Trump administration imposed an embargo on Iranian ports, impeding Tehran s ability to export its oil. Bahrain s envoy to the UN, Jamal Alrowaiei, highlighted the need for  collective action  to keep the strait  safe, secure and fully open .  The draft resolution is guided by the clear principle: freedom of navigation in accordance with international law.  Mohammed Issa Abushahab, the UAE s representative to the UN, added that  international waterways cannot be controlled through coercion, through coercion attacks or threats against civilian and commercial shipping .  The resolution demands the disclosure and removal of sea mines placed in and around the Strait of Hormuz. It rejects the imposition of illegal tolls and interference with freedom of navigation and lawful transit passage. It supports the establishment of a humanitarian corridor to facilitate the movement of aid, fertiliser, and other essential goods through the strait,  said Abushahab. The US envoy to the UN, Mike Waltz, condemned reports that Iran was launching a Persian Gulf Straits Authority, which would impose tolls on ships crossing the waterway, calling the dispersal of seamen in the Strait a  cynical bid for leverage .  Collective punishment of the entire world to try to resolve some type of dispute is unacceptable, it s immoral, and it s illegal in international law,  he said.  This should be a simple demand. The removal of mines from an international waterway that you cannot exact illegal tolls. We have to address these violations, here in the council, and we have to ask ourselves if a country chooses to oppose such a simple proposition, do they really want peace,  Waltz said. Iran s Foreign Minister, Abbas Araghchi, said navigation will return to normal in the strait if the war ends and the blockade, as well as sanctions against his country, are lifted. Talking about the draft UN resolution, he added that it ignores the reason for the current situation in the strait, blaming the US s use of force and attacks on Iran. A previous Bahraini resolution, which was backed by the US and appeared to open a path to legitimise military action against Iran, failed last month when Russia and China exercised their vetoes in the 15-member Security Council. The new draft avoids explicit language about authorising force while still operating under Chapter VII of the UN Charter, which allows the Security Council to impose measures ranging from sanctions to military action. Washington reportedly hopes to conclude discussions between Security Council members quickly, with the aim of circulating a final draft of the resolution by Friday and holding a vote early next week, although Russia and China still have a competing text under consideration.",
+    "content_length": 4564,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/gulf-states-urge-un-action-to-ensure-strait-of-hormuz-safety?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:42.794548",
+    "processed_at": "2026-05-07T20:51:15.583788"
+  },
+  {
+    "title": "Can China help end the Iran war?",
+    "author": null,
+    "publication_date": "2026-05-07T19:02:17",
+    "category": "top_news",
+    "content": "China is emerging as a major player in global diplomacy   including in the Middle East. In 2023, it helped re-establish diplomatic ties between Riyadh and Tehran. While it is not officially mediating efforts to end the ongoing war   both the United States and Iran are looking to China to help de-escalate. So, can it propel the two sides towards that goal? And if China makes a direct push to stop the fighting, how will its economic clout affect the course of negotiations? Presenter:Mohammed Jamjoom Guests: Setareh Sadeqi   Assistant professor, Tehran University s Faculty of World Studies Scott Uehlinger   Former senior CIA officer and US Navy veteran Andy Mok   Senior research fellow, Center for China and Globalization",
+    "content_length": 727,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/video/inside-story/2026/5/7/can-china-help-end-the-iran-war?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:44.412339",
+    "processed_at": "2026-05-07T20:51:15.583956"
+  },
+  {
+    "title": "Inside the Israeli bloc that could topple Netanyahu",
+    "author": null,
+    "publication_date": "2026-05-07T18:51:22",
+    "category": "top_news",
+    "content": "Israel s opposition is uniting to try to unseat Prime Minister Benjamin Netanyahu in upcoming elections. Former Prime Ministers Naftali Bennett and Yair Lapid are joining forces, but deep divisions remain over the war with Iran and Israel s future direction. As pressure mounts on Netanyahu after months of war and political turmoil, can the opposition really take power? In this episode: Episode credits: This episode was produced by Noor Wazwaz and Sar\u00ed el-Khalili, with Spencer Cline, Chloe K. Li, Tuleen Barakat, and our host, Malika Bilal. It was edited by Tamara Khandaker. Our sound designer is Alex Roldan. Our video editors are Hisham Abu Salah and Mohannad al-Melhem. Alexandra Locke is The Take s executive producer. Connect with us:  AJEPodcasts onX,Instagram,Facebook, andYouTube",
+    "content_length": 792,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/video/the-take-2/2026/5/7/aje-onl-isr_bibipressure_av_v1-070526?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:46.025334",
+    "processed_at": "2026-05-07T20:51:15.584108"
+  },
+  {
+    "title": "Israel s attacks and pressure sowing seeds for division in tense Lebanon",
+    "author": null,
+    "publication_date": "2026-05-07T18:41:42",
+    "category": "top_news",
+    "content": "Beirut, Lebanon  Israel s attacks on Lebanon and pressure on the Lebanese government to disarm the pro-Iran Shia movement Hezbollah by force are stoking internal tensions, analysts have told Al Jazeera. Israel is leaning on this division as a strategy to try to pit communities against one another, they say. The strategy is working, they add, pointing to a recent series of sectarian and political provocations.  It s not a byproduct  of the war . They know very well what they re doing,  Michael Young, a Lebanon expert at the Carnegie Middle East Center, told Al Jazeera.  When they were emptying the southern suburbs, they knew very well that most of these people would head into inner Beirut and into areas which are not areas of Shia majority. And certainly, I think this was their effort to create sectarian tensions and, in a way, put more pressure on the Lebanese state.  On March 2, Israel intensified its war on Lebanon. It was the second intensification in the last two years and came after a November 2024 ceasefire agreement that Israel violated more than 10,000 times, according to United Nations peacekeepers. While Israel had repeatedly bombed southern Lebanon during that supposed ceasefire, it expanded its attacks to Beirut and other areas after Hezbollah responded to the killing of Iran s Supreme Leader, Ali Khamenei, on February 28. Israel has killed more than 5,000 people in Lebanon since October 2023. In March, Israeli forces invaded Lebanon for the second time since 2024, where they are nowsystematically destroying southern towns and villages. Israel has forcibly displaced 1.2 million people, ordering people from their homes in southern Lebanon and Beirut s southern suburbs. When the ceasefire between the United States and Iran started on April 8, many Lebanese wondered if they would be included. Israel definitively answered that question bykilling more than 350 peoplein a day, with 100 Israeli attacks in under ten minutes across Lebanon. The ceasefire was extended by Donald Trump, but Israel has continued attacks in southern Lebanon, and Hezbollah has responded in turn by battling Israeli troops. Lebanon has agreed to direct negotiations with Israel in attempts to end the war and occupation of southern Lebanon. Internally, however, Lebanon s population and politicians are deeply divided on the issue of negotiations with Israel. Hezbollah and its supporters oppose direct negotiations, preferring indirect talks, while the Lebanese government is under US and Israeli pressure to engage in direct talks, possibly even ameeting between the Israeli and Lebanese leaders.  The Israelis are trying to put pressure on the Lebanese state,  Young said.  They re destroying villages, pushing the Shia community into areas where there aren t Shia majorities, and it is definitely designed to heighten sectarian tensions.  Israel s stated goal has been to disarm Hezbollah, but analysts said the Israelis are aware that it cannot be done through force alone.  The objective remains a bit of a mystery because the Israelis know very well that the Lebanese Army cannot disarm Hezbollah and  the Israeli military  themselves admitted that they couldn t do this job because it would involve taking all of Lebanon, which they have no intention of doing,  Young said. This is why analysts say Israel s aim is to press Lebanon s communities into confrontation, in order to pressure the Lebanese state to concede. And the strategy appears to have worked to fuel some internal tensions. Provocative statements from both pro- and anti-Hezbollah political officials have circulated in the media in the last two months. Hezbollah s Wafiq Safa and Mahmoud Qamati have both warned the Lebanese government that its decisions toban the group s military activitieswill be overturned. Some right-wing Christian members of parliament have made provocative statements praising the Israeli military. LBCI, a Lebanese television channel founded by the anti-Hezbollah Lebanese Forces in the 1980s but now operating as an independent station, caused a stir by posting a cartoon of Hezbollah chief Naim Qassem and some Hezbollah members disparagingly depicted as characters in the  Angry Birds  mobile game. Some Hezbollah supporters responded by posting provocative images of the Maronite Patriarch Bechara Rai on social media.  These media provocations are unfortunately part of a plan to distort the image of the resistance  Hezbollah  and to serve the Israeli enemy and America through this media campaign that targeted the resistance and targeted Sheikh Naim Qassem,  Qassem Kassir, a journalist close to Hezbollah, told Al Jazeera.  Of course, there have been reactions from supporters of the resistance that concerned Patriarch Rai, though, the leadership of Hezbollah, the Supreme Shia Islamic Council and Dar al-Ifta al-Jaafari issued statements condemning this,  Kassir added, referring to Shia religious bodies in Lebanon. The internal squabbles are a byproduct of Isra",
+    "content_length": 4991,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/israels-attacks-and-pressure-sowing-seeds-for-division-in-tense-lebanon?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:49.197500",
+    "processed_at": "2026-05-07T20:51:15.584647"
+  },
+  {
+    "title": "Brazil s Lula meets Trump amid efforts to avert new US trade tariffs",
+    "author": null,
+    "publication_date": "2026-05-07T18:33:36",
+    "category": "top_news",
+    "content": "Brazilian President Luiz Inacio Lula da Silva has met US President Donald Trump at the White House, for talks that were expected to focus on trade, security, and critical minerals as Lula seeks to reset their rocky relationship. Thursday smeetingbetween Lula and Trump brought together two of the world s most prominent populist figures despite their sharp ideological differences. Posting on social media, Trump hailed the talks with his  very dynamic  Brazilian counterpart.  We discussed many topics, including Trade and, specifically, Tariffs. The meeting went very well,  Trump said on Truth Social. He added that additional meetings will be scheduled over the coming months. Lula said he had left the three-hour meeting in Washington  very, very satisfied .  I believe it was an important meeting for Brazil, and an important meeting for the United States,  he told reporters. He added that he told Trump Brazil is open to sharing its critical mineral potential with investors  interested in the country. Both leaders have built loyal political followings by positioning themselves against established elites, although they differ markedly on issues ranging from economic policy to international alliances. Brazilian officials were hoping for the best outcome from the meeting, given tensions last year over Trump s tariff policy and his outrage over the trial and conviction of Brazilian ex-President Jair Bolsonaro. Last year, Trump hit Brazilian products with 50 percent tariffs, among the highest on any US imports, accusing the country of promoting a witch-hunt against Bolsonaro, who was later convicted for attempting to overthrow democracy. Trump later withdrew most of the levies, including on Brazilian beef and coffee, at least in part to help calm rising US grocery prices. In February, the US Supreme Court struck down the global tariffs he imposed under a national emergencies law, eliminating many of the remaining levies. Brazilian products still face an extra 10 percent tariff due to expire in July. But in recent weeks, Brazil has seen signs that its exports could be hit with new tariffs connected to a Section 301 investigation into unfair trade practices. Tensions remain over digital trade   as Brazil has blocked the US-backed renewal of a World Trade Organization e-commerce tariff moratorium   and high Brazilian tariffs on some goods, including ethanol. The Office of the US Trade Representative last month also alleged that nearly half of Brazil s timber exports come from illegal sources   which the Lula administration denies, arguing that it brought deforestation rates to historically low levels. The trip to the US is taking place in a difficult domestic scenario for Lula, who last week suffered two blows dealt by Congress. The lower house overrode his veto on a law seeking to reduce Bolsonaro s time in prison, while the Senate rejected his nomination to the Supreme Court   a first in more than 100 years. The 80-year-old leader will seek a fourth, non-consecutive term in the October elections. Polls currently show him neck to neck with Bolsonaro s senator son, Flavio.",
+    "content_length": 3115,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/brazils-lula-meets-trump-amid-efforts-to-avert-new-us-trade-tariffs?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:50.782140",
+    "processed_at": "2026-05-07T20:51:15.585016"
+  },
+  {
+    "title": "Man pleads guilty to Colorado firebombing, groups call for family reprieve",
+    "author": null,
+    "publication_date": "2026-05-07T18:20:56",
+    "category": "top_news",
+    "content": "Mohamed Soliman, accused of attacking demonstrators who had gathered in support of Israeli captives held in Gaza in Colorado, has pleaded guilty to murder charges. The plea on Thursday was accompanied by renewed calls for the administration of US President Donald Trump to cease efforts todeport Soliman s family, who authorities have said had no prior knowledge of the attack that they have roundly condemned. The family had been the longest held in US immigration detention under Trump s second term before their release in late April. The administration has pledged to continue to pursue deportation. Soliman has faced more than 100 state criminal charges related to the June 2025 attack. The video showed him throwing Molotov cocktails at demonstrators gathered in Boulder, Colorado. An 82-year-old woman, Karen Diamond, later died from wounds sustained during the attack. The 46-year-old Egyptian citizen pleaded guilty to two different categories of murder charges connected to Diamond s death. He was sentenced to life in prison. He has also been charged with federal hate crime crimes. In a statement read in court by a prosecutor, Diamond s sons asked that Soliman not be allowed to see his family again  since he is responsible for our mother never seeing her family again . Andrew and Ethan Diamond said their mother suffered  indescribable pain  for more than three weeks before her death.  In those weeks, we learned the full meaning of the expressions living hell and fate worse than death,  Diamond s sons said in the statement. Following the attack, the White House promised to quickly deport Soliman s wife, Hayam El Gamal and their five children, ranging in age from five to 18 years old. Lawmakers and community groups have decried the effort as collective punishment. The family has flatly condemned the attack and denied any knowledge that it was going to take place, with El Gamal divorcing her husband shortly after the incident. An FBI agent subsequently testified under oath that there was no evidence that the family, who have not been charged with any crimes, was aware of the father s plan. After being held for 10 months at an immigration detention centre in Dilley, Texas, a judge ordered the family released in late April. However, they were re-detained during a scheduled ICE check-in shortly after, in what their lawyer, Eric Lee, has decried as a  kidnapping . The family was again released after their deportation flight was ordered grounded by a judge. In a statement to Al Jazeera in April, a Department of Homeland Security spokesperson maintained that the  terrorist s family  had been ordered released by an  activist judge . The statement said the agency will  continue to fight for the removal of those who have no right to be in our country especially terrorists and their associates . Several local community groups and lawmakers in the Boulder area have since signed on to a public statement urging immigration officials to cease targeting the family.  They belong here,  the statement said,  and with a clear and united voice, we call for Federal immigration authorities to cease their persecution of this family and leave both them and our broader communities in peace.",
+    "content_length": 3216,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/man-pleads-guilty-to-colorado-firebombing-groups-call-for-family-reprieve?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:52.377461",
+    "processed_at": "2026-05-07T20:51:15.585419"
+  },
+  {
+    "title": "US sanctions Iraqi minister accused of aiding Iran oil sales",
+    "author": null,
+    "publication_date": "2026-05-07T18:19:00",
+    "category": "top_news",
+    "content": "The United States Treasury Department has sanctioned Iraq s Deputy Minister of Oil, Ali Maarij al-Bahadly, for allegedly helping Iran to sell its oil. The Treasury s Office of Foreign Assets Control  OFAC  said it was taking action to increase economic pressure on Iran as negotiations for a deal between Washington and Tehran are showing timid signs of progress, with Iranian officials saying they are reviewing a US proposal. In astatementon Thursday, OFAC said it was also designating three leaders of the Iran-backed armed groups, Kata ib Sayyid al-Shuhada  KSS  and Asa ib Ahl al-Haq  AAH . Together with the Kataib Hezbollah group, Washington holds them accountable for attacking US personnel and civilians, OFAC added.  Like a rogue gang, the Iranian regime is pillaging resources that rightfully belong to the Iraqi people,  said Treasury Secretary Scott Bessent.  Treasury will not stand idly by as Iran s military exploits Iraqi oil to fund terrorism against the United States and our partners.  According to OFAC, al-Bahadly has for years used his official positions   first as head of the Iraqi parliament s oil and gas committee, then within the Iraq Ministry of Oil   to facilitate the diversion of Iraqi oil products to benefit an alleged Iran-affiliated oil smuggler, Salim Ahmed Said and AAH. The US Treasury sanctioned Said last year for running a scheme of companies selling Iranian oil falsely declared as Iraqi oil to avoid sanctions. The smuggler, according to US officials, obtained favoured access to Iraqi oil and procured forged documentation from Iraqi government officials, legitimising illicit oil. Iraq s Oil Ministry did not immediately respond to Al Jazeera s request for comment. The sanctions come as Iraqi Prime Minister-designate,Ali al-Zaidi, works to form a new government. Some Iraqi legislators and media reports have suggested that al-Bahadly is one of the frontrunners to lead the Oil Ministry. The penalties against Iraq s deputy oil minister mark rare sanctions by Washington against members of Iraq s government as the US tries to limit the influence of Iran-backed groups. Earlier this year, Trump openly rejected the potential return of former Prime MinisterNouri al-Malikito power. The Wall Street Journal, quoting Iraqi and US officials last month, said the US had halted shipments and paused some security cooperation programmes with the Iraqi military. The US has been pushing to exclude Iran s closest allies from power in Baghdad. Victoria Taylor, a former US State Department official who oversaw relations with Iraq during the Joe Biden administration, says the move is a  tough signal by the Trump administration in the midst of the ongoing cabinet deliberations in Baghdad .  Likely meant to ensure Ali Maarij did not emerge as a contender for Minister of Oil, but also sends a definitive message that the Trump team is serious about keeping militias, and those affiliated with militia finance business, out of key positions,  Taylor said on X. Iran and the US have been at war since joint US-Israel strikes in late February. Since the shaky ceasefire was agreed on April 8, the confrontation has morphed into a struggle over who applies most pressure in the Strait of Hormuz. About a fifth of global energy exports pass through the narrow waterway during peacetime. Iranian forces have effectively gained control of the strait by hitting, or threatening to attack, vessels attempting to transit. In response, US forces have imposed a naval blockade on Iranian ports, making oil exports impossible.",
+    "content_length": 3555,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/us-sanctions-iraqi-minister-accused-of-aiding-iran-oil-sales?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:54.004183",
+    "processed_at": "2026-05-07T20:51:15.585832"
+  },
+  {
+    "title": "Protests in Bolivia escalate amid economic turmoil and policy demands",
+    "author": null,
+    "publication_date": "2026-05-07T18:17:11",
+    "category": "top_news",
+    "content": "Protests in Bolivia have entered the third day with three separate groups calling for reforms to agricultural, educational and labour policies. The country s main trade union, the Bolivian Workers  Centre  COB  union, issued a strike call last Friday, coinciding with labour reform protests around the globe to mark International Workers  Day. The South American nation was already facing a currency shortage, causing its largest economic crisis in 40 years. On Tuesday, COB, alongside transport and education workers, took to the streets, leading to clashes with police. Law enforcement officers fired tear gas at protesters near the presidential palace in La Paz, and in nearby El Alto, public workers blocked the streets with buses, cars and trucks. Last year, centre-right politicianRodrigo Paz was elected president of Bolivia, marking a shift in government leadership in a country that had been under socialist rule for decades. Bolivia, which is facing a budgetary crisis, ended a fuel subsidy, putting pressure on the country s working class. The fuel subsidy that Paz cut was decades-old and kept petrol prices at 2006 levels. As a result, quality fuels became increasingly inaccessible. Transport workers say that they were forced to use lower-quality fuel and claim that, because of that, their cars, trucks and buses have damaged engines. They are demanding compensation from the government for the damage. The strikes brought public transport to a halt in several major cities around the country. Among them are the administrative capital, La Paz, as well as El Alto, Cochabamba, Oruro, and the constitutional capital, Sucre. They have created at least 70 roadway blockages, according to the Bolivia Highway Association. A litre of diesel fuel under the subsidy cost 3.72 bolivianos   2.06 per gallon  and premium petrol cost 3.74 bolivianos   2.05 per gallon . Without the subsidies, those prices now jump to 9.80 bolivianos   5.40 per gallon  for diesel and 6.96 bolivianos   3.84 per gallon  for premium petrol. Transit workers also demanded shorter queues at filling stations, as well as road repairs. Bolivia has faced a budgetary crisis and is running low on foreign currency reserves. Last year, Paz and his centre-right government replaced socialists who had been in power for decades, and at the time, Paz said that the country was in an  economic, financial, energy, and social emergency . When Paz took office, the country s total debt was 95 percent of GDP, and it had consistent deficits that mirrored the country s commodity collapse in 2014. Bolivia s liquid reserves were less than one month of imports, according to analysis from the non-partisan global economic think tank Finance for Development Lab. In an effort to stabilise the economy in February, the government sought  3.3bn in financial assistance from the International Monetary Fund, as first reported by Bloomberg. By March, the country s finance minister claimed that the nation would make dollar bond coupon payments. That led to Moody s raising the country s credit rating. That month, Bolivia s inflation hit 15 percent, a 10 percent drop from a 25 percent peak last July. However, other protests are also under way in Bolivia at the same time. A teachers  union is calling for a state-funded  single free public education system . COB has called for an indefinite general strike.  Starting today, a general, indefinite and active strike is declared, until the government understands the people s demands,  COB s Secretary-General Mario Argollo told a group of 1,000 supporters on Friday amid the calls for the protest in El Alto. Among the demands are a 20 percent increase to the nation s minimum wage, which currently sits at 3,300 bolivianos   477.71  per month and took effect in January. That is an increase from 2,750 bolivianos   398  set in 2025. Paz pushed back on the demands last week.  If you want to raise salaries, first create jobs,  Paz said in the city of Cochabamba on Friday. The group also wants pension increases and cuts to salaries for government officials.",
+    "content_length": 4077,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/economy/2026/5/7/protests-in-bolivia-escalate-amid-economic-turmoil-and-policy-demands?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:55.579715",
+    "processed_at": "2026-05-07T20:51:15.586297"
+  },
+  {
+    "title": "US issues new Cuba sanctions as UN experts warn of  energy starvation",
+    "author": null,
+    "publication_date": "2026-05-07T20:10:44",
+    "category": "top_news",
+    "content": "The United States has imposed a host of new sanctions related to Cuba, amid amonths-long pressure campaignagainst the island nation. The sanctions on Thursday were announced hours after United Nations experts decried Washington s effective fuel blockade of the island as tantamount to  energy starvation . The measures target Grupo de Administracion Empresarial SA  GAESA , a conglomerate  controlled by the country s military with ties to nearly all segments of its economy. They also targeted Ania Guillermina Lastres Morera, the executive president of GAESA and Moa Nickel SA  MNSA , a joint venture between Toronto-based Sherritt  International Corp and Cuba s state-owned  nickel company. Sherritt said in a statement on its website on Thursday that it had  suspended its direct participation in joint venture activities in Cuba following the sanctions. In a statement posted on X, US Secretary of State Marco Rubio said the sanctions  demonstrate that the Trump Administration will not stand by while Cuba s communist regime threatens our national security in our hemisphere .  We will continue to take action until the regime takes all necessary political and economic reforms,  he said. Cuba s government did not immediately reply to the latest round of sanctions, but condemned anearlier roundannounced this week as  unilateral coercive measures  and  collective punishment on the Cuban people . The Trump administration has heaped increasing pressure on Cuba s communist government following the January 3 abduction of Venezuelan leader Nicolas Maduro. Washington has since staunched Venezuelan oil deliveries to Cuba, long considered a lifeline. Trump also issued an executive order creating a path to sanction any country that delivers fuel to the island, effectively imposing a blockade. Trump has alsorepeatedly threatenedmilitary action to topple the country s government. On Thursday, three UN special rapporteurs condemned what they called the  unlawful blockade , which they said  is not only disrupting daily life but also undermining the enjoyment of a wide range of human rights . They defined  energy starvation  as  a condition in which the lack of fuel cripples the functioning of essential services required for a dignified life . All told, only one Russian oil tanker has reached Cuba in recent months, compounding an energy crisis already driven by economic stagnation. The experts pointed to reports that fuel scarcity was preventing people from reaching hospitals and children from attending school, adding that the country s health system is reportedly facing a backlog of more than 96,000 surgeries, including 11,000 for children.  Energy starvation as a coercive tool is incompatible with international human rights norms,  they said.",
+    "content_length": 2766,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/us-issues-new-cuba-sanctions-as-un-experts-warn-of-energy-starvation?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:39.512452",
+    "processed_at": "2026-05-07T21:06:31.218385"
+  },
+  {
+    "title": "This is my last voice note : how piracy returned to Somalia and Yemen",
+    "author": null,
+    "publication_date": "2026-05-07T19:51:14",
+    "category": "top_news",
+    "content": "Piracy is rising again near Somalia. Since April 20, at least three ships have been hijacked off Somali waters and one near the Yemeni coast. A sailor s voice note from a seized vessel has spread online. As the Iran war shakes the region, is it fueling attacks on key shipping routes? In this episode: Mohamed Gabobe   Mohamed_Gabobe , Journalist Episode credits: This episode was produced by Marcos Bartolom\u00e9 and Sar\u00ed el-Khalili with Spencer Cline, Tuleen Barakat, Catherine Nouhan, and our host, Malika Bilal. It was edited by Tamara Khandaker. Our sound designer is Alex Roldan. This episode was mixed by Rick Rush. Our video editors are Hisham Abu Salah and Mohannad al-Melhem. Alexandra Locke is The Take s executive producer. Connect with us:  AJEPodcasts onX,Instagram,Facebook, andYouTube",
+    "content_length": 796,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/video/the-take-2/2026/5/7/aje-onl-aj_tt_som_waratsea_full-060526?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:41.136485",
+    "processed_at": "2026-05-07T21:06:31.218748"
+  },
+  {
+    "title": "Gulf states urge UN action to ensure Strait of Hormuz safety",
+    "author": null,
+    "publication_date": "2026-05-07T19:32:23",
+    "category": "top_news",
+    "content": "Gulf states are pushing a United Nations Security Council resolution that threatens Iran with sanctions and other measures if it does not halt attacks on ships in the Strait of Hormuz, stop imposing  illegal tolls , and disclose the location of all mines to allow freedom of navigation. Speaking at the UN on Thursday, top diplomats from Qatar, Bahrain and the United Arab Emirates  UAE  stressed the importance of resuming pre-war traffic levels in the narrow waterway through which about a fifth of global energy exports pass in peacetime. Ensuring the strait remains open is a  demand set forth  by UN conventions, as well as a  shared international responsibility,  said Qatar s ambassador to the UN, Alya Ahmed Saif al-Thani. The current situation  not only jeopardises global economic stability and energy security but also worsens humanitarian crises and undermines regional stability,  she added. The three Gulf nations co-drafting the resolution, along with Saudi Arabia, Kuwait and the United States, also demand that Iran  immediately participate in and enable  UN efforts to establish a humanitarian corridor in the strait to deliver vital aid, fertiliser and other goods. The oil and gas-rich countries have found themselves on the front line of the war between Tehran and Washington. After the US and Israel started attacking Iran in late February, the Islamic Republic has responded by striking energy and civilian infrastructure in neighbouring countries around the Gulf. Iran has also brought traffic through the Strait of Hormuz to a near total standstill, making transit too risky. While Saudi Arabia and the UAE have pipelines to bypass the narrow waterway and allow some exports, other Gulf nations, such as Qatar, have been forced to halt energy exports. As global gas and oil prices soared, the Trump administration imposed an embargo on Iranian ports, impeding Tehran s ability to export its oil. Bahrain s envoy to the UN, Jamal Alrowaiei, highlighted the need for  collective action  to keep the strait  safe, secure and fully open .  The draft resolution is guided by the clear principle: freedom of navigation in accordance with international law.  Mohammed Issa Abushahab, the UAE s representative to the UN, added that  international waterways cannot be controlled through coercion, through coercion attacks or threats against civilian and commercial shipping .  The resolution demands the disclosure and removal of sea mines placed in and around the Strait of Hormuz. It rejects the imposition of illegal tolls and interference with freedom of navigation and lawful transit passage. It supports the establishment of a humanitarian corridor to facilitate the movement of aid, fertiliser, and other essential goods through the strait,  said Abushahab. The US envoy to the UN, Mike Waltz, condemned reports that Iran was launching a Persian Gulf Straits Authority, which would impose tolls on ships crossing the waterway, calling the dispersal of seamen in the Strait a  cynical bid for leverage .  Collective punishment of the entire world to try to resolve some type of dispute is unacceptable, it s immoral, and it s illegal in international law,  he said.  This should be a simple demand. The removal of mines from an international waterway that you cannot exact illegal tolls. We have to address these violations, here in the council, and we have to ask ourselves if a country chooses to oppose such a simple proposition, do they really want peace,  Waltz said. Iran s Foreign Minister, Abbas Araghchi, said navigation will return to normal in the strait if the war ends and the blockade, as well as sanctions against his country, are lifted. Talking about the draft UN resolution, he added that it ignores the reason for the current situation in the strait, blaming the US s use of force and attacks on Iran. A previous Bahraini resolution, which was backed by the US and appeared to open a path to legitimise military action against Iran, failed last month when Russia and China exercised their vetoes in the 15-member Security Council. The new draft avoids explicit language about authorising force while still operating under Chapter VII of the UN Charter, which allows the Security Council to impose measures ranging from sanctions to military action. Washington reportedly hopes to conclude discussions between Security Council members quickly, with the aim of circulating a final draft of the resolution by Friday and holding a vote early next week, although Russia and China still have a competing text under consideration.",
+    "content_length": 4564,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/gulf-states-urge-un-action-to-ensure-strait-of-hormuz-safety?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:42.794548",
+    "processed_at": "2026-05-07T21:06:31.219536"
+  },
+  {
+    "title": "Can China help end the Iran war?",
+    "author": null,
+    "publication_date": "2026-05-07T19:02:17",
+    "category": "top_news",
+    "content": "China is emerging as a major player in global diplomacy   including in the Middle East. In 2023, it helped re-establish diplomatic ties between Riyadh and Tehran. While it is not officially mediating efforts to end the ongoing war   both the United States and Iran are looking to China to help de-escalate. So, can it propel the two sides towards that goal? And if China makes a direct push to stop the fighting, how will its economic clout affect the course of negotiations? Presenter:Mohammed Jamjoom Guests: Setareh Sadeqi   Assistant professor, Tehran University s Faculty of World Studies Scott Uehlinger   Former senior CIA officer and US Navy veteran Andy Mok   Senior research fellow, Center for China and Globalization",
+    "content_length": 727,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/video/inside-story/2026/5/7/can-china-help-end-the-iran-war?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:44.412339",
+    "processed_at": "2026-05-07T21:06:31.219747"
+  },
+  {
+    "title": "Inside the Israeli bloc that could topple Netanyahu",
+    "author": null,
+    "publication_date": "2026-05-07T18:51:22",
+    "category": "top_news",
+    "content": "Israel s opposition is uniting to try to unseat Prime Minister Benjamin Netanyahu in upcoming elections. Former Prime Ministers Naftali Bennett and Yair Lapid are joining forces, but deep divisions remain over the war with Iran and Israel s future direction. As pressure mounts on Netanyahu after months of war and political turmoil, can the opposition really take power? In this episode: Episode credits: This episode was produced by Noor Wazwaz and Sar\u00ed el-Khalili, with Spencer Cline, Chloe K. Li, Tuleen Barakat, and our host, Malika Bilal. It was edited by Tamara Khandaker. Our sound designer is Alex Roldan. Our video editors are Hisham Abu Salah and Mohannad al-Melhem. Alexandra Locke is The Take s executive producer. Connect with us:  AJEPodcasts onX,Instagram,Facebook, andYouTube",
+    "content_length": 792,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/video/the-take-2/2026/5/7/aje-onl-isr_bibipressure_av_v1-070526?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:46.025334",
+    "processed_at": "2026-05-07T21:06:31.219964"
+  },
+  {
+    "title": "Israel s attacks and pressure sowing seeds for division in tense Lebanon",
+    "author": null,
+    "publication_date": "2026-05-07T18:41:42",
+    "category": "top_news",
+    "content": "Beirut, Lebanon  Israel s attacks on Lebanon and pressure on the Lebanese government to disarm the pro-Iran Shia movement Hezbollah by force are stoking internal tensions, analysts have told Al Jazeera. Israel is leaning on this division as a strategy to try to pit communities against one another, they say. The strategy is working, they add, pointing to a recent series of sectarian and political provocations.  It s not a byproduct  of the war . They know very well what they re doing,  Michael Young, a Lebanon expert at the Carnegie Middle East Center, told Al Jazeera.  When they were emptying the southern suburbs, they knew very well that most of these people would head into inner Beirut and into areas which are not areas of Shia majority. And certainly, I think this was their effort to create sectarian tensions and, in a way, put more pressure on the Lebanese state.  On March 2, Israel intensified its war on Lebanon. It was the second intensification in the last two years and came after a November 2024 ceasefire agreement that Israel violated more than 10,000 times, according to United Nations peacekeepers. While Israel had repeatedly bombed southern Lebanon during that supposed ceasefire, it expanded its attacks to Beirut and other areas after Hezbollah responded to the killing of Iran s Supreme Leader, Ali Khamenei, on February 28. Israel has killed more than 5,000 people in Lebanon since October 2023. In March, Israeli forces invaded Lebanon for the second time since 2024, where they are nowsystematically destroying southern towns and villages. Israel has forcibly displaced 1.2 million people, ordering people from their homes in southern Lebanon and Beirut s southern suburbs. When the ceasefire between the United States and Iran started on April 8, many Lebanese wondered if they would be included. Israel definitively answered that question bykilling more than 350 peoplein a day, with 100 Israeli attacks in under ten minutes across Lebanon. The ceasefire was extended by Donald Trump, but Israel has continued attacks in southern Lebanon, and Hezbollah has responded in turn by battling Israeli troops. Lebanon has agreed to direct negotiations with Israel in attempts to end the war and occupation of southern Lebanon. Internally, however, Lebanon s population and politicians are deeply divided on the issue of negotiations with Israel. Hezbollah and its supporters oppose direct negotiations, preferring indirect talks, while the Lebanese government is under US and Israeli pressure to engage in direct talks, possibly even ameeting between the Israeli and Lebanese leaders.  The Israelis are trying to put pressure on the Lebanese state,  Young said.  They re destroying villages, pushing the Shia community into areas where there aren t Shia majorities, and it is definitely designed to heighten sectarian tensions.  Israel s stated goal has been to disarm Hezbollah, but analysts said the Israelis are aware that it cannot be done through force alone.  The objective remains a bit of a mystery because the Israelis know very well that the Lebanese Army cannot disarm Hezbollah and  the Israeli military  themselves admitted that they couldn t do this job because it would involve taking all of Lebanon, which they have no intention of doing,  Young said. This is why analysts say Israel s aim is to press Lebanon s communities into confrontation, in order to pressure the Lebanese state to concede. And the strategy appears to have worked to fuel some internal tensions. Provocative statements from both pro- and anti-Hezbollah political officials have circulated in the media in the last two months. Hezbollah s Wafiq Safa and Mahmoud Qamati have both warned the Lebanese government that its decisions toban the group s military activitieswill be overturned. Some right-wing Christian members of parliament have made provocative statements praising the Israeli military. LBCI, a Lebanese television channel founded by the anti-Hezbollah Lebanese Forces in the 1980s but now operating as an independent station, caused a stir by posting a cartoon of Hezbollah chief Naim Qassem and some Hezbollah members disparagingly depicted as characters in the  Angry Birds  mobile game. Some Hezbollah supporters responded by posting provocative images of the Maronite Patriarch Bechara Rai on social media.  These media provocations are unfortunately part of a plan to distort the image of the resistance  Hezbollah  and to serve the Israeli enemy and America through this media campaign that targeted the resistance and targeted Sheikh Naim Qassem,  Qassem Kassir, a journalist close to Hezbollah, told Al Jazeera.  Of course, there have been reactions from supporters of the resistance that concerned Patriarch Rai, though, the leadership of Hezbollah, the Supreme Shia Islamic Council and Dar al-Ifta al-Jaafari issued statements condemning this,  Kassir added, referring to Shia religious bodies in Lebanon. The internal squabbles are a byproduct of Isra",
+    "content_length": 4991,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/israels-attacks-and-pressure-sowing-seeds-for-division-in-tense-lebanon?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:49.197500",
+    "processed_at": "2026-05-07T21:06:31.220709"
+  },
+  {
+    "title": "Brazil s Lula meets Trump amid efforts to avert new US trade tariffs",
+    "author": null,
+    "publication_date": "2026-05-07T18:33:36",
+    "category": "top_news",
+    "content": "Brazilian President Luiz Inacio Lula da Silva has met US President Donald Trump at the White House, for talks that were expected to focus on trade, security, and critical minerals as Lula seeks to reset their rocky relationship. Thursday smeetingbetween Lula and Trump brought together two of the world s most prominent populist figures despite their sharp ideological differences. Posting on social media, Trump hailed the talks with his  very dynamic  Brazilian counterpart.  We discussed many topics, including Trade and, specifically, Tariffs. The meeting went very well,  Trump said on Truth Social. He added that additional meetings will be scheduled over the coming months. Lula said he had left the three-hour meeting in Washington  very, very satisfied .  I believe it was an important meeting for Brazil, and an important meeting for the United States,  he told reporters. He added that he told Trump Brazil is open to sharing its critical mineral potential with investors  interested in the country. Both leaders have built loyal political followings by positioning themselves against established elites, although they differ markedly on issues ranging from economic policy to international alliances. Brazilian officials were hoping for the best outcome from the meeting, given tensions last year over Trump s tariff policy and his outrage over the trial and conviction of Brazilian ex-President Jair Bolsonaro. Last year, Trump hit Brazilian products with 50 percent tariffs, among the highest on any US imports, accusing the country of promoting a witch-hunt against Bolsonaro, who was later convicted for attempting to overthrow democracy. Trump later withdrew most of the levies, including on Brazilian beef and coffee, at least in part to help calm rising US grocery prices. In February, the US Supreme Court struck down the global tariffs he imposed under a national emergencies law, eliminating many of the remaining levies. Brazilian products still face an extra 10 percent tariff due to expire in July. But in recent weeks, Brazil has seen signs that its exports could be hit with new tariffs connected to a Section 301 investigation into unfair trade practices. Tensions remain over digital trade   as Brazil has blocked the US-backed renewal of a World Trade Organization e-commerce tariff moratorium   and high Brazilian tariffs on some goods, including ethanol. The Office of the US Trade Representative last month also alleged that nearly half of Brazil s timber exports come from illegal sources   which the Lula administration denies, arguing that it brought deforestation rates to historically low levels. The trip to the US is taking place in a difficult domestic scenario for Lula, who last week suffered two blows dealt by Congress. The lower house overrode his veto on a law seeking to reduce Bolsonaro s time in prison, while the Senate rejected his nomination to the Supreme Court   a first in more than 100 years. The 80-year-old leader will seek a fourth, non-consecutive term in the October elections. Polls currently show him neck to neck with Bolsonaro s senator son, Flavio.",
+    "content_length": 3115,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/brazils-lula-meets-trump-amid-efforts-to-avert-new-us-trade-tariffs?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:50.782140",
+    "processed_at": "2026-05-07T21:06:31.221191"
+  },
+  {
+    "title": "Man pleads guilty to Colorado firebombing, groups call for family reprieve",
+    "author": null,
+    "publication_date": "2026-05-07T18:20:56",
+    "category": "top_news",
+    "content": "Mohamed Soliman, accused of attacking demonstrators who had gathered in support of Israeli captives held in Gaza in Colorado, has pleaded guilty to murder charges. The plea on Thursday was accompanied by renewed calls for the administration of US President Donald Trump to cease efforts todeport Soliman s family, who authorities have said had no prior knowledge of the attack that they have roundly condemned. The family had been the longest held in US immigration detention under Trump s second term before their release in late April. The administration has pledged to continue to pursue deportation. Soliman has faced more than 100 state criminal charges related to the June 2025 attack. The video showed him throwing Molotov cocktails at demonstrators gathered in Boulder, Colorado. An 82-year-old woman, Karen Diamond, later died from wounds sustained during the attack. The 46-year-old Egyptian citizen pleaded guilty to two different categories of murder charges connected to Diamond s death. He was sentenced to life in prison. He has also been charged with federal hate crime crimes. In a statement read in court by a prosecutor, Diamond s sons asked that Soliman not be allowed to see his family again  since he is responsible for our mother never seeing her family again . Andrew and Ethan Diamond said their mother suffered  indescribable pain  for more than three weeks before her death.  In those weeks, we learned the full meaning of the expressions living hell and fate worse than death,  Diamond s sons said in the statement. Following the attack, the White House promised to quickly deport Soliman s wife, Hayam El Gamal and their five children, ranging in age from five to 18 years old. Lawmakers and community groups have decried the effort as collective punishment. The family has flatly condemned the attack and denied any knowledge that it was going to take place, with El Gamal divorcing her husband shortly after the incident. An FBI agent subsequently testified under oath that there was no evidence that the family, who have not been charged with any crimes, was aware of the father s plan. After being held for 10 months at an immigration detention centre in Dilley, Texas, a judge ordered the family released in late April. However, they were re-detained during a scheduled ICE check-in shortly after, in what their lawyer, Eric Lee, has decried as a  kidnapping . The family was again released after their deportation flight was ordered grounded by a judge. In a statement to Al Jazeera in April, a Department of Homeland Security spokesperson maintained that the  terrorist s family  had been ordered released by an  activist judge . The statement said the agency will  continue to fight for the removal of those who have no right to be in our country especially terrorists and their associates . Several local community groups and lawmakers in the Boulder area have since signed on to a public statement urging immigration officials to cease targeting the family.  They belong here,  the statement said,  and with a clear and united voice, we call for Federal immigration authorities to cease their persecution of this family and leave both them and our broader communities in peace.",
+    "content_length": 3216,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/man-pleads-guilty-to-colorado-firebombing-groups-call-for-family-reprieve?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:52.377461",
+    "processed_at": "2026-05-07T21:06:31.221691"
+  },
+  {
+    "title": "US sanctions Iraqi minister accused of aiding Iran oil sales",
+    "author": null,
+    "publication_date": "2026-05-07T18:19:00",
+    "category": "top_news",
+    "content": "The United States Treasury Department has sanctioned Iraq s Deputy Minister of Oil, Ali Maarij al-Bahadly, for allegedly helping Iran to sell its oil. The Treasury s Office of Foreign Assets Control  OFAC  said it was taking action to increase economic pressure on Iran as negotiations for a deal between Washington and Tehran are showing timid signs of progress, with Iranian officials saying they are reviewing a US proposal. In astatementon Thursday, OFAC said it was also designating three leaders of the Iran-backed armed groups, Kata ib Sayyid al-Shuhada  KSS  and Asa ib Ahl al-Haq  AAH . Together with the Kataib Hezbollah group, Washington holds them accountable for attacking US personnel and civilians, OFAC added.  Like a rogue gang, the Iranian regime is pillaging resources that rightfully belong to the Iraqi people,  said Treasury Secretary Scott Bessent.  Treasury will not stand idly by as Iran s military exploits Iraqi oil to fund terrorism against the United States and our partners.  According to OFAC, al-Bahadly has for years used his official positions   first as head of the Iraqi parliament s oil and gas committee, then within the Iraq Ministry of Oil   to facilitate the diversion of Iraqi oil products to benefit an alleged Iran-affiliated oil smuggler, Salim Ahmed Said and AAH. The US Treasury sanctioned Said last year for running a scheme of companies selling Iranian oil falsely declared as Iraqi oil to avoid sanctions. The smuggler, according to US officials, obtained favoured access to Iraqi oil and procured forged documentation from Iraqi government officials, legitimising illicit oil. Iraq s Oil Ministry did not immediately respond to Al Jazeera s request for comment. The sanctions come as Iraqi Prime Minister-designate,Ali al-Zaidi, works to form a new government. Some Iraqi legislators and media reports have suggested that al-Bahadly is one of the frontrunners to lead the Oil Ministry. The penalties against Iraq s deputy oil minister mark rare sanctions by Washington against members of Iraq s government as the US tries to limit the influence of Iran-backed groups. Earlier this year, Trump openly rejected the potential return of former Prime MinisterNouri al-Malikito power. The Wall Street Journal, quoting Iraqi and US officials last month, said the US had halted shipments and paused some security cooperation programmes with the Iraqi military. The US has been pushing to exclude Iran s closest allies from power in Baghdad. Victoria Taylor, a former US State Department official who oversaw relations with Iraq during the Joe Biden administration, says the move is a  tough signal by the Trump administration in the midst of the ongoing cabinet deliberations in Baghdad .  Likely meant to ensure Ali Maarij did not emerge as a contender for Minister of Oil, but also sends a definitive message that the Trump team is serious about keeping militias, and those affiliated with militia finance business, out of key positions,  Taylor said on X. Iran and the US have been at war since joint US-Israel strikes in late February. Since the shaky ceasefire was agreed on April 8, the confrontation has morphed into a struggle over who applies most pressure in the Strait of Hormuz. About a fifth of global energy exports pass through the narrow waterway during peacetime. Iranian forces have effectively gained control of the strait by hitting, or threatening to attack, vessels attempting to transit. In response, US forces have imposed a naval blockade on Iranian ports, making oil exports impossible.",
+    "content_length": 3555,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/news/2026/5/7/us-sanctions-iraqi-minister-accused-of-aiding-iran-oil-sales?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:54.004183",
+    "processed_at": "2026-05-07T21:06:31.223323"
+  },
+  {
+    "title": "Protests in Bolivia escalate amid economic turmoil and policy demands",
+    "author": null,
+    "publication_date": "2026-05-07T18:17:11",
+    "category": "top_news",
+    "content": "Protests in Bolivia have entered the third day with three separate groups calling for reforms to agricultural, educational and labour policies. The country s main trade union, the Bolivian Workers  Centre  COB  union, issued a strike call last Friday, coinciding with labour reform protests around the globe to mark International Workers  Day. The South American nation was already facing a currency shortage, causing its largest economic crisis in 40 years. On Tuesday, COB, alongside transport and education workers, took to the streets, leading to clashes with police. Law enforcement officers fired tear gas at protesters near the presidential palace in La Paz, and in nearby El Alto, public workers blocked the streets with buses, cars and trucks. Last year, centre-right politicianRodrigo Paz was elected president of Bolivia, marking a shift in government leadership in a country that had been under socialist rule for decades. Bolivia, which is facing a budgetary crisis, ended a fuel subsidy, putting pressure on the country s working class. The fuel subsidy that Paz cut was decades-old and kept petrol prices at 2006 levels. As a result, quality fuels became increasingly inaccessible. Transport workers say that they were forced to use lower-quality fuel and claim that, because of that, their cars, trucks and buses have damaged engines. They are demanding compensation from the government for the damage. The strikes brought public transport to a halt in several major cities around the country. Among them are the administrative capital, La Paz, as well as El Alto, Cochabamba, Oruro, and the constitutional capital, Sucre. They have created at least 70 roadway blockages, according to the Bolivia Highway Association. A litre of diesel fuel under the subsidy cost 3.72 bolivianos   2.06 per gallon  and premium petrol cost 3.74 bolivianos   2.05 per gallon . Without the subsidies, those prices now jump to 9.80 bolivianos   5.40 per gallon  for diesel and 6.96 bolivianos   3.84 per gallon  for premium petrol. Transit workers also demanded shorter queues at filling stations, as well as road repairs. Bolivia has faced a budgetary crisis and is running low on foreign currency reserves. Last year, Paz and his centre-right government replaced socialists who had been in power for decades, and at the time, Paz said that the country was in an  economic, financial, energy, and social emergency . When Paz took office, the country s total debt was 95 percent of GDP, and it had consistent deficits that mirrored the country s commodity collapse in 2014. Bolivia s liquid reserves were less than one month of imports, according to analysis from the non-partisan global economic think tank Finance for Development Lab. In an effort to stabilise the economy in February, the government sought  3.3bn in financial assistance from the International Monetary Fund, as first reported by Bloomberg. By March, the country s finance minister claimed that the nation would make dollar bond coupon payments. That led to Moody s raising the country s credit rating. That month, Bolivia s inflation hit 15 percent, a 10 percent drop from a 25 percent peak last July. However, other protests are also under way in Bolivia at the same time. A teachers  union is calling for a state-funded  single free public education system . COB has called for an indefinite general strike.  Starting today, a general, indefinite and active strike is declared, until the government understands the people s demands,  COB s Secretary-General Mario Argollo told a group of 1,000 supporters on Friday amid the calls for the protest in El Alto. Among the demands are a 20 percent increase to the nation s minimum wage, which currently sits at 3,300 bolivianos   477.71  per month and took effect in January. That is an increase from 2,750 bolivianos   398  set in 2025. Paz pushed back on the demands last week.  If you want to raise salaries, first create jobs,  Paz said in the city of Cochabamba on Friday. The group also wants pension increases and cuts to salaries for government officials.",
+    "content_length": 4077,
+    "source": "Al Jazeera",
+    "url": "https://www.aljazeera.com/economy/2026/5/7/protests-in-bolivia-escalate-amid-economic-turmoil-and-policy-demands?traffic_source=rss",
+    "language": "en",
+    "scraped_at": "2026-05-07T20:48:55.579715",
+    "processed_at": "2026-05-07T21:06:31.224870"
+  }
+]
 };
-// ── REPLACE DATA ABOVE WITH YOUR ACTUAL GOLD FILES ──────────────────────────
+
 
 async function fetchJson(path) {
   try {
