@@ -22,6 +22,7 @@ HEADERS = {
     ),
     "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
     "Accept-Language": "en-US,en;q=0.9",
+    "Referer": "https://www.reuters.com/",
 }
 
 BASE_URL = "https://www.reuters.com"
@@ -75,36 +76,41 @@ def scrape_article(meta):
     try:
         response = requests.get(url, headers=HEADERS, timeout=15)
         response.raise_for_status()
-        soup = BeautifulSoup(response.text, "html.parser")
+        raw_text = response.text
 
-        # Author
         author = None
-        author_tag = soup.find(class_=lambda c: c and "author" in c.lower())
-        if author_tag:
-            author = author_tag.get_text(strip=True)
-
-        # Content — Reuters uses data-testid attributes
         content = ""
-        for selector in [
-            "[data-testid='paragraph-0']",
-            "div.article-body__content",
-            "div.StandardArticleBody_body",
-            "article",
-        ]:
-            content_div = soup.select_one(selector)
-            if content_div:
-                for tag in content_div.find_all(["script", "style", "figure", "nav"]):
-                    tag.decompose()
-                paragraphs = content_div.find_all("p")
-                if paragraphs:
-                    content = " ".join(p.get_text(strip=True) for p in paragraphs)
-                else:
-                    content = content_div.get_text(separator=" ", strip=True)
-                break
-
-        if not content:
-            # Fallback: use description from RSS
+        if "Please enable JS" in raw_text or "enable JavaScript" in raw_text:
+            logger.warning(f"Reuters JS guard detected for {url}, using RSS description fallback")
             content = meta.get("description", "")
+        else:
+            soup = BeautifulSoup(raw_text, "html.parser")
+
+            # Author
+            author_tag = soup.find(class_=lambda c: c and "author" in c.lower())
+            if author_tag:
+                author = author_tag.get_text(strip=True)
+
+            # Content — Reuters uses data-testid attributes
+            for selector in [
+                "[data-testid='paragraph-0']",
+                "div.article-body__content",
+                "div.StandardArticleBody_body",
+                "article",
+            ]:
+                content_div = soup.select_one(selector)
+                if content_div:
+                    for tag in content_div.find_all(["script", "style", "figure", "nav"]):
+                        tag.decompose()
+                    paragraphs = content_div.find_all("p")
+                    if paragraphs:
+                        content = " ".join(p.get_text(strip=True) for p in paragraphs)
+                    else:
+                        content = content_div.get_text(separator=" ", strip=True)
+                    break
+
+            if not content:
+                content = meta.get("description", "")
 
         if not content:
             logger.warning(f"No content found for: {url}")

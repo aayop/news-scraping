@@ -5,7 +5,12 @@ Usage: python main_scraper.py
 
 import json
 import os
+import sys
 from datetime import datetime
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 from hespress_scraper   import run_scraper as scrape_hespress
 from bbc_scraper        import run_scraper as scrape_bbc

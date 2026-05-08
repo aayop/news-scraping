@@ -24,6 +24,10 @@ import logging
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
 
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
+
 
 class PipelineRunner:
     """Orchestrates the complete news intelligence pipeline."""
@@ -48,6 +52,8 @@ class PipelineRunner:
                 shell=True,
                 capture_output=True,
                 text=True,
+                encoding='utf-8',
+                errors='replace',
                 timeout=300  # 5 minute timeout
             )
             success = result.returncode == 0
@@ -69,7 +75,7 @@ class PipelineRunner:
         logger.info("📰 Starting web scraping...")
 
         success, output = self.run_command(
-            "cd scrapers && python main_scraper.py",
+            f"cd scrapers && \"{sys.executable}\" main_scraper.py",
             "Running web scrapers"
         )
 
@@ -99,7 +105,7 @@ class PipelineRunner:
         logger.info("🧹 Starting Silver layer processing...")
 
         success, output = self.run_command(
-            "python silver_processor.py",
+            f"\"{sys.executable}\" silver_processor.py",
             "Processing Silver layer"
         )
 
@@ -129,7 +135,7 @@ class PipelineRunner:
         logger.info("🥇 Starting Gold layer analytics...")
 
         success, output = self.run_command(
-            "python gold_processor.py",
+            f"\"{sys.executable}\" gold_processor.py",
             "Processing Gold layer"
         )
 
@@ -156,7 +162,7 @@ class PipelineRunner:
         logger.info("🔍 Running data quality checks...")
 
         success, output = self.run_command(
-            "python quality_checker.py",
+            f"\"{sys.executable}\" quality_checker.py",
             "Running quality checks"
         )
 
@@ -272,6 +278,21 @@ const DATA = {{
                 f.write(new_content)
 
             logger.info("📄 Dashboard HTML updated with fresh data")
+            return
+
+        # Fallback: replace the initial DATA object block if markers are missing
+        data_start = content.find("const DATA = {")
+        if data_start != -1:
+            data_end = content.find("};", data_start)
+            if data_end != -1:
+                data_end += 2
+                new_content = content[:data_start] + data_js + content[data_end:]
+                with open(dashboard_file, "w", encoding="utf-8") as f:
+                    f.write(new_content)
+                logger.info("📄 Dashboard HTML updated with fresh data (fallback)")
+                return
+
+        logger.warning("Dashboard HTML markers not found; inline data update skipped")
 
     def check_prerequisites(self) -> bool:
         """Check if all required files and dependencies exist."""

@@ -42,14 +42,16 @@ def get_article_links(category_url, max_articles=20):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
 
-        for article in soup.find_all("article"):
-            a_tag = article.find("a", href=True)
-            if a_tag:
-                href = a_tag["href"]
-                if href.startswith("/"):
-                    href = BASE_URL + href
-                if href not in links:
-                    links.append(href)
+        for a_tag in soup.find_all("a", href=True):
+            href = a_tag["href"]
+            if href.startswith("/"):
+                href = BASE_URL + href
+            if not href.startswith(BASE_URL):
+                continue
+            if not href.endswith(".html"):
+                continue
+            if href not in links:
+                links.append(href)
             if len(links) >= max_articles:
                 break
 

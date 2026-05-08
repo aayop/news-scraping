@@ -9,9 +9,14 @@ Usage: python quality_checker.py
 import json
 import os
 import glob
+import sys
 from datetime import datetime, timedelta
 from collections import Counter
 import logging
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)

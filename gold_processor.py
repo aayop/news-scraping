@@ -15,8 +15,13 @@ import json
 import os
 import re
 import glob
+import sys
 from collections import Counter
 from datetime import datetime
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 SILVER_DIR = "data_lake/silver"
 GOLD_DIR   = "data_lake/gold"
@@ -147,6 +152,15 @@ def save_gold_table(data, filename: str):
     print(f"   [SAVE] {filename}")
 
 
+def save_articles_json(articles: list[dict]):
+    """Save the full article list to the Gold layer for dashboard rendering."""
+    os.makedirs(GOLD_DIR, exist_ok=True)
+    filepath = f"{GOLD_DIR}/articles.json"
+    with open(filepath, "w", encoding="utf-8") as f:
+        json.dump(articles, f, ensure_ascii=False, indent=2)
+    print("   [SAVE] articles.json")
+
+
 def run_gold_processor():
     print("=" * 60)
     print("[GOLD] Building Gold Layer Analytics Tables")
@@ -165,6 +179,7 @@ def run_gold_processor():
     save_gold_table(articles_by_date(articles),     "articles_by_date.json")
     save_gold_table(top_keywords(articles),         "top_keywords.json")
     save_gold_table(summary_stats(articles),        "summary_stats.json")
+    save_articles_json(articles)
 
     # Print preview
     print("\n[STATS] Articles by Source:")

@@ -3,6 +3,7 @@ Akhbarona News Scraper
 Collects articles from akhbarona.com (Moroccan news site)
 """
 
+import re
 import requests
 from bs4 import BeautifulSoup
 from datetime import datetime
@@ -26,11 +27,12 @@ HEADERS = {
 BASE_URL = "https://www.akhbarona.com"
 
 CATEGORIES = [
-    f"{BASE_URL}/",
-    f"{BASE_URL}/politics",
-    f"{BASE_URL}/social",
-    f"{BASE_URL}/economy",
-    f"{BASE_URL}/sports",
+    f"{BASE_URL}/politic/index.1.html",
+    f"{BASE_URL}/economy/index.1.html",
+    f"{BASE_URL}/national/index.1.html",
+    f"{BASE_URL}/sport/index.1.html",
+    f"{BASE_URL}/world/index.1.html",
+    f"{BASE_URL}/health/index.1.html",
 ]
 
 
@@ -41,28 +43,18 @@ def get_article_links(category_url, max_articles=20):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
 
-        for article in soup.find_all("article"):
-            a_tag = article.find("a", href=True)
-            if a_tag:
-                href = a_tag["href"]
-                if href.startswith("/"):
-                    href = BASE_URL + href
-                if href not in links and BASE_URL in href:
-                    links.append(href)
+        for a_tag in soup.find_all("a", href=True):
+            href = a_tag["href"]
+            if href.startswith("/"):
+                href = BASE_URL + href
+            if not href.startswith(BASE_URL):
+                continue
+            if not re.search(r"/\d+\.html$", href):
+                continue
+            if href not in links:
+                links.append(href)
             if len(links) >= max_articles:
                 break
-
-        if not links:
-            for tag in soup.find_all(["h2", "h3"]):
-                a_tag = tag.find("a", href=True)
-                if a_tag:
-                    href = a_tag["href"]
-                    if href.startswith("/"):
-                        href = BASE_URL + href
-                    if href not in links and BASE_URL in href:
-                        links.append(href)
-                if len(links) >= max_articles:
-                    break
 
     except requests.RequestException as e:
         logger.error(f"Failed to fetch {category_url}: {e}")
@@ -104,13 +96,13 @@ def scrape_article(url):
 
         # Content
         content = ""
-        for selector in ["div.article-body", "div.entry-content", "div.post-content", "article"]:
-            content_div = soup.select_one(selector)
-            if content_div:
-                for tag in content_div.find_all(["script", "style", "nav", "aside"]):
-                    tag.decompose()
-                content = content_div.get_text(separator=" ", strip=True)
-                break
+        content_div = soup.select_one("div.col-md-8") or soup.select_one("div.article-body") or soup.select_one("div.entry-content") or soup.select_one("article")
+        if content_div:
+            for tag in content_div.find_all(["script", "style", "nav", "aside"]):
+                tag.decompose()
+            for block in content_div.select(".detail-social-links, .share-links, .related-posts"):
+                block.decompose()
+            content = content_div.get_text(separator=" ", strip=True)
 
         if not title or not content:
             logger.warning(f"Skipping (missing title or content): {url}")

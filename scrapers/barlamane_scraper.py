@@ -23,14 +23,14 @@ HEADERS = {
     "Accept-Language": "ar,fr;q=0.9,en;q=0.8",
 }
 
-BASE_URL = "https://www.barlamane.com"
+BASE_URL = "https://barlamane.com"
 
 CATEGORIES = [
-    f"{BASE_URL}/",
-    f"{BASE_URL}/category/politique",
-    f"{BASE_URL}/category/societe",
-    f"{BASE_URL}/category/economie",
-    f"{BASE_URL}/category/sport",
+    f"{BASE_URL}/category/الأخبار/سياسة/",
+    f"{BASE_URL}/category/الأخبار/مجتمع/",
+    f"{BASE_URL}/category/الأخبار/اقتصاد/",
+    f"{BASE_URL}/category/الأخبار/رياضة/",
+    f"{BASE_URL}/category/الأخبار/خارجة-الحدود/",
 ]
 
 
@@ -41,29 +41,21 @@ def get_article_links(category_url, max_articles=20):
         response.raise_for_status()
         soup = BeautifulSoup(response.text, "html.parser")
 
-        for article in soup.find_all("article"):
-            a_tag = article.find("a", href=True)
-            if a_tag:
-                href = a_tag["href"]
-                if href.startswith("/"):
-                    href = BASE_URL + href
-                if href not in links and BASE_URL in href:
-                    links.append(href)
+        for a_tag in soup.find_all("a", href=True):
+            href = a_tag["href"]
+            if href.startswith("/"):
+                href = BASE_URL + href
+            if not href.startswith(BASE_URL):
+                continue
+            if any(skip in href for skip in ["/category/", "/page/", "/tag/", "/author/", "/fr", "/feed", "/contact", "/about"]):
+                continue
+            path = href[len(BASE_URL):].strip("/")
+            if not path or path.count("/") > 1:
+                continue
+            if href not in links:
+                links.append(href)
             if len(links) >= max_articles:
                 break
-
-        # Also try h2/h3 links if no articles found
-        if not links:
-            for tag in soup.find_all(["h2", "h3"]):
-                a_tag = tag.find("a", href=True)
-                if a_tag:
-                    href = a_tag["href"]
-                    if href.startswith("/"):
-                        href = BASE_URL + href
-                    if href not in links and BASE_URL in href:
-                        links.append(href)
-                if len(links) >= max_articles:
-                    break
 
     except requests.RequestException as e:
         logger.error(f"Failed to fetch {category_url}: {e}")

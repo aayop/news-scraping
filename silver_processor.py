@@ -14,9 +14,14 @@ import json
 import os
 import re
 import glob
+import sys
 import logging
 from datetime import datetime
 from html.parser import HTMLParser
+
+if hasattr(sys.stdout, 'reconfigure'):
+    sys.stdout.reconfigure(encoding='utf-8', errors='replace')
+    sys.stderr.reconfigure(encoding='utf-8', errors='replace')
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
 logger = logging.getLogger(__name__)
