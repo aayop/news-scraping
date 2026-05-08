@@ -364,7 +364,7 @@ const DATA = {{
             return False
 
         # Ensure data lake prefixes exist
-        for prefix in ["bronze", "silver", "gold"]:
+        for prefix in ["bronze", "silver", "streaming", "gold"]:
             ensure_prefix(prefix)
 
         logger.info(f"✅ Prerequisites check passed ({get_backend_description()})")

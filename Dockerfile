@@ -18,8 +18,8 @@ RUN pip install --no-cache-dir -r scrapers/requirements.txt
 # Copy application code
 COPY . /app/
 
-# Create necessary directories
-RUN mkdir -p data_lake/bronze data_lake/silver data_lake/gold reports logs
+# Create the folders used by the pipeline
+RUN mkdir -p data_lake/bronze data_lake/silver data_lake/streaming data_lake/gold reports logs
 
 # Set environment variables
 ENV PYTHONPATH=/app

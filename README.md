@@ -131,6 +131,12 @@ py warehouse_loader.py
 py quality_checker.py
 ```
 
+Pour la presentation, un guide court est disponible dans :
+
+```text
+DEMO.md
+```
+
 ## Data Lake
 
 Les donnees sont organisees en couches :
